@@ -19,3 +19,8 @@ spring:
   data:
     rest:
       defaultMediaType: application/json
+
+service:
+  default:
+    adminLogin: admin
+    adminPassword: admin
