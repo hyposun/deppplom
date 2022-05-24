@@ -1,0 +1,21 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application.name: deppplom
+  h2:
+    console.enabled: true
+  datasource:
+    url: jdbc:h2:file:./data/db
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate.ddl-auto: "update"
+  data:
+    rest:
+      defaultMediaType: application/json
