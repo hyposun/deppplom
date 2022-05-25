@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -61,6 +63,15 @@ public class UserController {
     public Page<User> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "25") int size) {
         var pageable = PageRequest.of(page, size);
         return repository.findAll(pageable);
+    }
+
+    @GetMapping("/me")
+    public User getMe() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        return repository
+                .findByLogin(principal.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
     }
 
 }
