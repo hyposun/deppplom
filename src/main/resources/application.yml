@@ -4,6 +4,8 @@ server:
     include-binding-errors: always
 
 spring:
+  mvc:
+    static-path-pattern: "/static/**"
   application.name: deppplom
   h2:
     console.enabled: true
@@ -24,3 +26,4 @@ service:
   default:
     adminLogin: admin
     adminPassword: admin
+    groups: Гуманитарии, Технари
