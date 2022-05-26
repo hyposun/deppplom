@@ -22,7 +22,7 @@ public abstract class Question<T extends Selection> {
 
     protected Difficulty difficulty;
 
-    protected int topicId;
+    protected int discipline_id;
 
     protected String resultDescription;
 

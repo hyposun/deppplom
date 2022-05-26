@@ -2,6 +2,7 @@ package com.kamilla.deppplom.question.controller;
 
 import com.kamilla.deppplom.question.QuestionService;
 import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
+import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
 import com.kamilla.deppplom.question.model.Question;
 import com.kamilla.deppplom.question.model.Selection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,22 @@ public class QuestionController {
     private QuestionService service;
 
     @PostMapping("/create/closed_question")
-    public ClosedQuestion crete(@RequestBody @Valid ClosedQuestion question) {
+    public ClosedQuestion create(@RequestBody @Valid ClosedQuestion question) {
         return (ClosedQuestion) service.save(question);
     }
 
+    @PostMapping("/create/order_close_question")
+    public OrderedClosedQuestion create(@RequestBody @Valid OrderedClosedQuestion question){
+        return (OrderedClosedQuestion) service.save(question);
+    }
+
     @GetMapping
-    public List<Question<Selection>> findAll() {
-        return service.findAll();
+    public List<Question<Selection>> findAll(@RequestParam(required = false) Integer disciplineId) {
+        if (disciplineId!=null){
+            return service.findQuestionsByDisciplineId(disciplineId);
+        } else {
+            return service.findAll();
+        }
     }
 
 }

@@ -8,7 +8,6 @@ import com.kamilla.deppplom.question.model.Selection;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +19,10 @@ public class QuestionRepository {
     @Autowired
     private ObjectMapper mapper;
     @Autowired
-    private QuestionJpaRepository repisitory;
+    private QuestionJpaRepository repository;
 
     public Optional<Question<Selection>> findQuestionById(int id) {
-        return repisitory.findById(id)
+        return repository.findById(id)
                 .map(this::fromEntity);
     }
 
@@ -32,16 +31,20 @@ public class QuestionRepository {
         QuestionEntity entity = new QuestionEntity();
         entity.setTitle(question.getTitle());
         entity.setType(question.getType());
-        entity.setTopicId(question.getTopicId());
+        entity.setDisciplineId(question.getDiscipline_id());
         entity.setBody(mapper.writeValueAsString(question));
-        entity = repisitory.save(entity);
+        entity = repository.save(entity);
         return fromEntity(entity);
     }
 
     public List<Question<Selection>> findAll() {
-        return repisitory.findAll()
+        return repository.findAll()
                 .stream().map(this::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public List<Question<Selection>> findAllByDisciplineId(int disciplineId){
+        return repository.findAllByDisciplineId(disciplineId);
     }
 
     @SuppressWarnings("unchecked")
@@ -62,4 +65,5 @@ public class QuestionRepository {
         question.setId(entity.getId());
         return question;
     }
+
 }

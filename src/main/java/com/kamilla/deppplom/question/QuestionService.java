@@ -34,4 +34,13 @@ public class QuestionService {
     public List<Question<Selection>> findAll() {
         return repository.findAll();
     }
+
+    public List <Question<Selection>> findQuestionsByDisciplineId(int disciplineId){
+        List<Question<Selection>> questions = repository.findAllByDisciplineId(disciplineId);
+        if (questions.isEmpty()) {
+            throw new IllegalArgumentException("Вопросы по дисциплине с id:  " + disciplineId + " не найдены");
+        }
+        return questions;
+    }
+
 }

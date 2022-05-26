@@ -1,13 +1,9 @@
 package com.kamilla.deppplom.question.repository;
 
 import lombok.Data;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Table
 @Entity
@@ -18,12 +14,19 @@ class QuestionEntity {
     @GeneratedValue
     private int id;
 
-    private int topicId;
+    @Column(nullable = false)
+    private int disciplineId;
 
+    @NotBlank
+    @Column(nullable = false)
     private String title;
 
+    @NotBlank
+    @Column(nullable = false)
     private String type;
 
+    @NotBlank
+    @Column(nullable = false)
     private String body;
 
 }
