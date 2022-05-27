@@ -7,10 +7,7 @@ import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.Question;
 import com.kamilla.deppplom.question.model.Selection;
 import com.kamilla.deppplom.question.repository.QuestionEntity;
-import com.kamilla.deppplom.tests.model.CreateRandomizedTestVariantRequest;
-import com.kamilla.deppplom.tests.model.CreateTestRequest;
-import com.kamilla.deppplom.tests.model.Test;
-import com.kamilla.deppplom.tests.model.TestVersion;
+import com.kamilla.deppplom.tests.model.*;
 import com.kamilla.deppplom.tests.repository.TestRepository;
 import com.kamilla.deppplom.tests.repository.TestVersionRepository;
 import com.kamilla.deppplom.tests.repository.model.TestEntity;
@@ -19,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.shuffle;
 import static java.util.stream.Collectors.toList;
@@ -39,7 +35,7 @@ public class TestService {
     @Autowired
     private QuestionService questionService;
 
-    private List<Test> findAll(int disciplineId) {
+    public List<Test> findAll(int disciplineId) {
         return testRepository.findByDisciplineId(disciplineId)
                 .stream().map(this::fromEntity)
                 .collect(toList());
@@ -66,17 +62,21 @@ public class TestService {
 
         for (int i = 0; i < request.getReplicas() + 1; i++) {
             var ids = getRandomizedQuestions(request, questions);
-            createVariant(ids, test);
+            manuallyCreateVersion(ids, test);
         }
 
         test = testRepository.getOne(test.getId());
         return fromEntity(test);
     }
 
-    public Test createVariant(int testId, List<Integer> questionIds) {
-        var test = getTest(testId);
-        test = createVariant(questionIds, test);
+    public Test manuallyCreateVersion(ManuallyCreateTestVersionRequest request) {
+        var test = getTest(request.getTestId());
+        test = manuallyCreateVersion(request.getQuestionIds(), test);
         return fromEntity(test);
+    }
+
+    public Optional<Test> findById(int testId) {
+        return testRepository.findById(testId).map(this::fromEntity);
     }
 
     private List<Integer> getRandomizedQuestions(CreateRandomizedTestVariantRequest request, List<Question<Selection>> questions) {
@@ -96,7 +96,7 @@ public class TestService {
                 .collect(toList());
     }
 
-    private TestEntity createVariant(List<Integer> questionIds, TestEntity test) {
+    private TestEntity manuallyCreateVersion(List<Integer> questionIds, TestEntity test) {
         var variantEntity = new TestVersionEntity();
         variantEntity.setQuestions(toEntities(getQuestionsByIds(questionIds)));
         variantEntity = testVersionRepository.save(variantEntity);
@@ -180,5 +180,4 @@ public class TestService {
             throw new IllegalArgumentException("Тест в таким именем и дисциплиной уже существует");
         }
     }
-
 }
