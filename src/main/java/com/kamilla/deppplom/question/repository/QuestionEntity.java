@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Table
 @Entity
 @Data
-class QuestionEntity {
+public class QuestionEntity {
 
     @Id
     @GeneratedValue
