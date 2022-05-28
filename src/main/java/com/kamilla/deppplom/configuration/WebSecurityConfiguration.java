@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-@EnableWebSecurity
-@Configuration
+//@EnableWebSecurity
+//@Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -21,7 +21,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .anyRequest().authenticated()
                         .and()
                 .formLogin()
-                    .defaultSuccessUrl("/static/index.html", true)
+//                    .defaultSuccessUrl("/static/index.html", true)
+                    .defaultSuccessUrl("/", true)
                     .permitAll()
                     .and()
                 .logout()

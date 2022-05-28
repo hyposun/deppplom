@@ -18,9 +18,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
     hibernate.ddl-auto: "update"
-  data:
-    rest:
-      defaultMediaType: application/json
 
 service:
   default:
