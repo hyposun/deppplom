@@ -28,6 +28,15 @@ public abstract class Question<T extends Selection> {
 
     public abstract String getType();
 
-    public abstract Result check(T selection);
+    public abstract CheckResult check(T selection);
+
+    protected int getCost() {
+        switch (difficulty) {
+            case LOW: return 1;
+            case MEDIUM: return 2;
+            case HIGH: return 3;
+            default: return 0;
+        }
+    }
 
 }

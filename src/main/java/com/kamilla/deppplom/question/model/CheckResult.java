@@ -5,7 +5,9 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class Result {
-    private boolean success;
+public class CheckResult {
+
+    private float points;
+
     private String message;
 }

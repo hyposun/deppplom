@@ -15,7 +15,10 @@ import com.kamilla.deppplom.tests.repository.model.TestVersionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import static java.util.Collections.shuffle;
 import static java.util.stream.Collectors.toList;
@@ -177,7 +180,7 @@ public class TestService {
     private void verifyCollision(CreateTestRequest request) {
         Optional<TestEntity> existingTest = testRepository.findByTitleAndDisciplineId(request.getTitle(), request.getDisciplineId());
         if (existingTest.isPresent()) {
-            throw new IllegalArgumentException("Тест в таким именем и дисциплиной уже существует");
+            throw new IllegalArgumentException("Тест c таким именем и дисциплиной уже существует");
         }
     }
 }

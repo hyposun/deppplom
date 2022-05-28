@@ -1,7 +1,7 @@
 package com.kamilla.deppplom.question;
 
+import com.kamilla.deppplom.question.model.CheckResult;
 import com.kamilla.deppplom.question.model.Question;
-import com.kamilla.deppplom.question.model.Result;
 import com.kamilla.deppplom.question.model.Selection;
 import com.kamilla.deppplom.question.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class QuestionService {
         return repository.findQuestionById(id);
     }
 
-    public Result check(int questionId, Selection selection) {
+    public CheckResult check(int questionId, Selection selection) {
         return repository
                 .findQuestionById(questionId)
                 .map(question -> question.check(selection))
