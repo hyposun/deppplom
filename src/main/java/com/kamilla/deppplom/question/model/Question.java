@@ -2,6 +2,7 @@ package com.kamilla.deppplom.question.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
+import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +12,9 @@ import lombok.Setter;
 @Setter
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ClosedQuestion.class),
+    @JsonSubTypes.Type(value = OrderedClosedQuestion.class),
 })
-public abstract class Question<T extends Selection> {
+public abstract class Question {
 
     protected int id;
 
@@ -22,13 +24,15 @@ public abstract class Question<T extends Selection> {
 
     protected Difficulty difficulty;
 
-    protected int discipline_id;
+    protected int disciplineId;
 
     protected String resultDescription;
 
-    public abstract String getType();
+    protected boolean disabled;
 
-    public abstract CheckResult check(T selection);
+    public abstract QuestionType getType();
+
+    public abstract CheckResult check(Object selection);
 
     protected int getCost() {
         switch (difficulty) {
@@ -40,3 +44,4 @@ public abstract class Question<T extends Selection> {
     }
 
 }
+

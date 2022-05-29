@@ -1,5 +1,7 @@
 package com.kamilla.deppplom.configuration;
 
+import com.kamilla.deppplom.discipline.Discipline;
+import com.kamilla.deppplom.discipline.DisciplineService;
 import com.kamilla.deppplom.groups.StudentGroup;
 import com.kamilla.deppplom.groups.StudentGroupRepository;
 import com.kamilla.deppplom.users.Role;
@@ -30,8 +32,11 @@ public class DefaultDataConfiguration {
     @NotBlank
     private String adminPassword;
 
-    @Value("${service.default.groups}")
+    @Value("${service.default.groups:}")
     private String groups;
+
+    @Value("${service.default.disciplines:}")
+    private String disciplines;
 
     @Autowired
     UserRepository userRepository;
@@ -39,10 +44,25 @@ public class DefaultDataConfiguration {
     @Autowired
     StudentGroupRepository groupRepository;
 
+    @Autowired
+    DisciplineService disciplineService;
+
     @PostConstruct
     public void setup() {
         handleUser();
         handleGroups();
+        handleDisciplines();
+    }
+
+    private void handleDisciplines() {
+        if (groups == null || isBlank(disciplines)) return;
+        for (String disciplineTitle : disciplines.split(",")) {
+            Optional<Discipline> existing = disciplineService.findByTitle(disciplineTitle);
+            if (existing.isPresent()) continue;
+            Discipline discipline = new Discipline();
+            discipline.setTitle(disciplineTitle);
+            disciplineService.update(discipline);
+        }
     }
 
     private void handleGroups() {

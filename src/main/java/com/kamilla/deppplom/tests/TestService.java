@@ -5,7 +5,6 @@ import com.kamilla.deppplom.discipline.repository.DisciplineRepository;
 import com.kamilla.deppplom.question.QuestionService;
 import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.Question;
-import com.kamilla.deppplom.question.model.Selection;
 import com.kamilla.deppplom.question.repository.QuestionEntity;
 import com.kamilla.deppplom.tests.model.*;
 import com.kamilla.deppplom.tests.repository.TestRepository;
@@ -82,13 +81,13 @@ public class TestService {
         return testRepository.findById(testId).map(this::fromEntity);
     }
 
-    private List<Integer> getRandomizedQuestions(CreateRandomizedTestVariantRequest request, List<Question<Selection>> questions) {
+    private List<Integer> getRandomizedQuestions(CreateRandomizedTestVariantRequest request, List<Question> questions) {
 
         var lowTests = getRandomQuestions(request.getLowQuestions(), Difficulty.LOW, questions);
         var mediumTests = getRandomQuestions(request.getMediumQuestion(), Difficulty.MEDIUM, questions);
         var highTests = getRandomQuestions(request.getHighQuestions(), Difficulty.HIGH, questions);
 
-        List<Question<Selection>> result = new ArrayList<>();
+        List<Question> result = new ArrayList<>();
         result.addAll(lowTests);
         result.addAll(mediumTests);
         result.addAll(highTests);
@@ -109,10 +108,10 @@ public class TestService {
         return test;
     }
 
-    private List<Question<Selection>> getRandomQuestions(
+    private List<Question> getRandomQuestions(
         int quantity,
         Difficulty difficulty,
-        List<Question<Selection>> all
+        List<Question> all
     ) {
         var questions = all.stream()
                 .filter(it -> it.getDifficulty() == difficulty)
@@ -123,7 +122,7 @@ public class TestService {
         }
 
         Random random = new Random();
-        var result = new ArrayList<Question<Selection>>();
+        var result = new ArrayList<Question>();
         for (int i = 0; i < quantity; i++) {
             int randomIndex = random.nextInt(questions.size());
             var item = questions.remove(randomIndex);
@@ -161,7 +160,7 @@ public class TestService {
                 .orElseThrow(() -> new IllegalArgumentException("Дисциплина не найдена"));
     }
 
-    private List<QuestionEntity> toEntities(List<Question<Selection>> questions) {
+    private List<QuestionEntity> toEntities(List<Question> questions) {
         return questions.stream().map(question -> {
             var questionEntity = new QuestionEntity();
             questionEntity.setId(question.getId());
@@ -169,7 +168,7 @@ public class TestService {
         }).collect(toList());
     }
 
-    private List<Question<Selection>> getQuestionsByIds(List<Integer> ids) {
+    private List<Question> getQuestionsByIds(List<Integer> ids) {
         return ids.stream()
                 .map(id -> questionService.findQuestionById(id))
                 .filter(Optional::isPresent)

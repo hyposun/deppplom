@@ -26,7 +26,10 @@ public class QuestionEntity {
     private String type;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, length = Integer.MAX_VALUE)
     private String body;
+
+    @Column(nullable = false)
+    private boolean disabled = false;
 
 }

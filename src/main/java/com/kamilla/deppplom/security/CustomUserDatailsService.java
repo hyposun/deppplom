@@ -1,4 +1,4 @@
-package com.kamilla.deppplom.configuration;
+package com.kamilla.deppplom.security;
 
 import com.kamilla.deppplom.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,8 @@ public class CustomUserDatailsService implements UserDetailsService {
                 .map(user -> User.builder()
                     .username(user.getLogin())
                     .password(user.getPassword())
-                    .authorities(user.getRole().name())
+                    .roles(user.getRole().name())
+                    .disabled(user.isDisabled())
                     .build()
                 )
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));

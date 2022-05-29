@@ -1,4 +1,4 @@
-package com.kamilla.deppplom.configuration;
+package com.kamilla.deppplom.security;
 
 import com.kamilla.deppplom.ui.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurityConfigurerAdapter;
@@ -23,9 +23,6 @@ public class VaadinWebSecurityConfig extends VaadinWebSecurityConfigurerAdapter 
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         setLoginView(http, LoginView.class);
-        http.formLogin()
-                .loginPage("/login")
-                .and().red
     }
 
     /**

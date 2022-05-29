@@ -16,12 +16,21 @@ public class QuestionService {
     @Autowired
     private QuestionRepository repository;
 
-    public <T extends Selection> Question<T> save(Question<T> question) {
+    public Question save(Question question) {
         return repository.save(question);
     }
 
-    public Optional<Question<Selection>> findQuestionById(int id) {
+    public Optional<Question> findQuestionById(int id) {
         return repository.findQuestionById(id);
+    }
+
+    public Question getQuestionById(int id) {
+        return findQuestionById(id)
+                       .orElseThrow(() -> new IllegalArgumentException("Вопрос не найден"));
+    }
+
+    public void deleteById(int id) {
+        repository.deleteById(id);
     }
 
     public CheckResult check(int questionId, Selection selection) {
@@ -31,16 +40,13 @@ public class QuestionService {
                 .orElseThrow(() -> new IllegalArgumentException("Вопрос с идентификтором " + questionId + " не найден"));
     }
 
-    public List<Question<Selection>> findAll() {
+    public List<Question> findAll() {
         return repository.findAll();
     }
 
-    public List <Question<Selection>> findQuestionsByDisciplineId(int disciplineId){
-        List<Question<Selection>> questions = repository.findAllByDisciplineId(disciplineId);
-        if (questions.isEmpty()) {
-            throw new IllegalArgumentException("Вопросы по дисциплине с id:  " + disciplineId + " не найдены");
-        }
-        return questions;
+    public List<Question> findQuestionsByDisciplineId(int disciplineId){
+        return repository.findAllByDisciplineId(disciplineId);
     }
+
 
 }

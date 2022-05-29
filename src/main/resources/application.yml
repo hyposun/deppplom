@@ -23,4 +23,5 @@ service:
   default:
     adminLogin: admin
     adminPassword: admin
-    groups: Гуманитарии, Технари
+    groups: "Стенфорд, Гарвард, Оксфорд"
+    disciplines: "Программирование - backend, Программирование - frontend"

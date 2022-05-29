@@ -60,13 +60,13 @@ public class ExaminationService {
          return fromEntity(resultEntity,user,test);
     }
 
-    public Examination findById(int examintationId) {
-        return repository.findById(examintationId)
+    public Examination findById(int examinationId) {
+        return repository.findById(examinationId)
                 .map(this::fromEntity)
                 .orElseThrow(() -> new IllegalArgumentException("Прохождение теста не найдено"));
     }
 
-    public Optional<Question<Selection>> getNextQuestion(int examinationId) {
+    public Optional<Question> getNextQuestion(int examinationId) {
 
         ExaminationEntity examination = getExamination(examinationId);
         Test test = getTest(examination.getTestId());
@@ -75,16 +75,16 @@ public class ExaminationService {
                 .filter(it -> it.getId() == examination.getTestVersionId()).findFirst()
                 .get();
 
-        List<Question<Selection>> questions = version.getQuestions();
+        List<Question> questions = version.getQuestions();
         List<QuestionExaminationEntity> resultList = examination.getResultList();
 
-        List<Question<Selection>> nonAnsweredQuestions = questions.stream()
+        List<Question> nonAnsweredQuestions = questions.stream()
                 .filter(question -> {
                     var processedQuestion = resultList.stream().filter(it -> it.getQuestionId() == question.getId()).findAny();
                     return processedQuestion.isEmpty();
                 }).collect(Collectors.toList());
 
-        Optional<Question<Selection>> nextQuestion = nonAnsweredQuestions.stream().findFirst();
+        Optional<Question> nextQuestion = nonAnsweredQuestions.stream().findFirst();
         if (nextQuestion.isEmpty()) {
             finalizeExamination(examination, test);
         }
@@ -94,7 +94,7 @@ public class ExaminationService {
     public void addAnswer(int examinationId, int questionId, Selection selection) {
 
         ExaminationEntity examinationEntity = getExamination(examinationId);
-        var question = getQuestion(questionId);
+        var question = questionService.getQuestionById(questionId);
 
         CheckResult checkResult = question.check(selection);
         QuestionExaminationEntity resultEntity = new QuestionExaminationEntity();
@@ -142,10 +142,6 @@ public class ExaminationService {
         return versions.get(index).getId();
     }
 
-    private Question<Selection> getQuestion(int questionId) {
-        return questionService.findQuestionById(questionId).orElseThrow(() -> new IllegalArgumentException("Вопрос не найден"));
-    }
-
     private Examination fromEntity(ExaminationEntity entity) {
         var test = getTest(entity.getTestId());
         var user = getUser(entity.getStudentId());
@@ -170,7 +166,7 @@ public class ExaminationService {
     }
 
     private QuestionExamination getQuestionResult(QuestionExaminationEntity it) {
-        Question<Selection> question = getQuestion(it.getQuestionId());
+        Question question = questionService.getQuestionById(it.getQuestionId());
         QuestionExamination questionExamination = new QuestionExamination();
         questionExamination.setId(it.getId());
         questionExamination.setQuestion(question);
