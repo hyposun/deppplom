@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class TestVersion {
     private int id;
-    private List<Question<Selection>> questions;
+    private List<Question> questions;
 }

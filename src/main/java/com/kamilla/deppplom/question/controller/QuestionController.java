@@ -29,7 +29,7 @@ public class QuestionController {
     }
 
     @GetMapping
-    public List<Question<Selection>> findAll(@RequestParam(required = false) Integer disciplineId) {
+    public List<Question> findAll(@RequestParam(required = false) Integer disciplineId) {
         if (disciplineId!=null){
             return service.findQuestionsByDisciplineId(disciplineId);
         } else {

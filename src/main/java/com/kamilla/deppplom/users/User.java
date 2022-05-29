@@ -6,6 +6,8 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -32,8 +34,11 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany
-    private Set<StudentGroup> groups;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<StudentGroup> groups = new HashSet<>();
+
+    @Column(nullable = false)
+    private boolean disabled = false;
 
 }
 

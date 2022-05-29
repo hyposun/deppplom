@@ -1,10 +1,8 @@
 package com.kamilla.deppplom.question.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
-import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
 import com.kamilla.deppplom.question.model.Question;
-import com.kamilla.deppplom.question.model.Selection;
+import com.kamilla.deppplom.question.model.QuestionType;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,49 +19,50 @@ public class QuestionRepository {
     @Autowired
     private QuestionJpaRepository repository;
 
-    public Optional<Question<Selection>> findQuestionById(int id) {
+    public Optional<Question> findQuestionById(int id) {
         return repository.findById(id)
                 .map(this::fromEntity);
     }
 
     @SneakyThrows
-    public <T extends Selection> Question<T> save(Question<T> question) {
+    public Question save(Question question) {
         QuestionEntity entity = new QuestionEntity();
+        entity.setId(question.getId());
         entity.setTitle(question.getTitle());
-        entity.setType(question.getType());
-        entity.setDisciplineId(question.getDiscipline_id());
+        entity.setType(question.getType().getType());
+        entity.setDisciplineId(question.getDisciplineId());
         entity.setBody(mapper.writeValueAsString(question));
+        entity.setDisabled(question.isDisabled());
         entity = repository.save(entity);
         return fromEntity(entity);
     }
 
-    public List<Question<Selection>> findAll() {
+    public List<Question> findAll() {
         return repository.findAll()
                 .stream().map(this::fromEntity)
                 .collect(Collectors.toList());
     }
 
-    public List<Question<Selection>> findAllByDisciplineId(int disciplineId){
-        return repository.findAllByDisciplineId(disciplineId);
+    public List<Question> findAllByDisciplineId(int disciplineId){
+        return repository.findAllByDisciplineId(disciplineId)
+                         .stream().map(this::fromEntity)
+                         .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
     @SneakyThrows
-    private <T extends Selection> Question<T> fromEntity(QuestionEntity entity) {
-        Class type;
-        switch (entity.getType()) {
-            case ClosedQuestion.TYPE:
-                type = ClosedQuestion.class;
-                break;
-            case OrderedClosedQuestion.TYPE:
-                type = OrderedClosedQuestion.class;
-                break;
-            default:
-                throw new IllegalArgumentException("Неизвестный тип вопроса: " + entity.getType());
-        }
-        Question question = (Question) mapper.readValue(entity.getBody(), type);
+    private Question fromEntity(QuestionEntity entity) {
+
+        QuestionType type = QuestionType.getByType(entity.getType());
+        Class<? extends Question> clazz = type.getClazz();
+
+        Question question = mapper.readValue(entity.getBody(), clazz);
         question.setId(entity.getId());
         return question;
+    }
+
+    public void deleteById(int id) {
+        repository.deleteById(id);
     }
 
 }

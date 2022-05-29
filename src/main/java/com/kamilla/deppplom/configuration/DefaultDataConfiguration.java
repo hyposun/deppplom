@@ -1,11 +1,12 @@
 package com.kamilla.deppplom.configuration;
 
+import com.kamilla.deppplom.discipline.Discipline;
+import com.kamilla.deppplom.discipline.DisciplineService;
 import com.kamilla.deppplom.groups.StudentGroup;
 import com.kamilla.deppplom.groups.StudentGroupRepository;
 import com.kamilla.deppplom.users.Role;
 import com.kamilla.deppplom.users.User;
 import com.kamilla.deppplom.users.UserRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotBlank;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -34,8 +32,11 @@ public class DefaultDataConfiguration {
     @NotBlank
     private String adminPassword;
 
-    @Value("${service.default.groups}")
+    @Value("${service.default.groups:}")
     private String groups;
+
+    @Value("${service.default.disciplines:}")
+    private String disciplines;
 
     @Autowired
     UserRepository userRepository;
@@ -43,10 +44,25 @@ public class DefaultDataConfiguration {
     @Autowired
     StudentGroupRepository groupRepository;
 
+    @Autowired
+    DisciplineService disciplineService;
+
     @PostConstruct
     public void setup() {
         handleUser();
         handleGroups();
+        handleDisciplines();
+    }
+
+    private void handleDisciplines() {
+        if (groups == null || isBlank(disciplines)) return;
+        for (String disciplineTitle : disciplines.split(",")) {
+            Optional<Discipline> existing = disciplineService.findByTitle(disciplineTitle);
+            if (existing.isPresent()) continue;
+            Discipline discipline = new Discipline();
+            discipline.setTitle(disciplineTitle);
+            disciplineService.update(discipline);
+        }
     }
 
     private void handleGroups() {

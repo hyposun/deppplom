@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 interface QuestionJpaRepository extends JpaRepository<QuestionEntity, Integer> {
 
-    List<Question<Selection>> findAllByDisciplineId(int id);
+    List<QuestionEntity> findAllByDisciplineId(int id);
 
 }
