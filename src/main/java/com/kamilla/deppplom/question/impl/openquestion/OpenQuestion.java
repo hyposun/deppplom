@@ -25,10 +25,10 @@ public class OpenQuestion extends Question {
 
         String selected = actualSelection.getSelectionString();
 
-        if(StringUtils.isBlank(selected) || StringUtils.isEmpty(selected)) return new CheckResult(falsePoints,resultDescription);
+        if(selected == null || StringUtils.isBlank(selected)) return new CheckResult(falsePoints,resultDescription);
 
         var distance = LevenshteinDistance.getDefaultInstance();
-        var permutations = distance.apply(validAnswer,selected);
+        var permutations = distance.apply(validAnswer.toLowerCase().trim(),selected.toLowerCase().trim());
 
         var deviation = (float)permutations / (float)validAnswer.length();
 
@@ -37,6 +37,7 @@ public class OpenQuestion extends Question {
         var resultPoint = getCost();
 
         return new CheckResult(resultPoint, resultDescription);
-        
+
     }
+
 }
