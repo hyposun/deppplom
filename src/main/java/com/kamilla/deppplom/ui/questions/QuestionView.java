@@ -8,7 +8,7 @@ import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQue
 import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.QuestionType;
 import com.kamilla.deppplom.ui.BaseLayout;
-import com.kamilla.deppplom.ui.UIUtils;
+import com.kamilla.deppplom.ui.utils.UIUtils;
 import com.kamilla.deppplom.ui.questions.closed.ClosedQuestionEditor;
 import com.kamilla.deppplom.ui.questions.ordered.OrderedCloseQuestionEditor;
 import com.vaadin.flow.component.button.Button;
@@ -90,9 +90,6 @@ public class QuestionView extends VerticalLayout {
         for (QuestionType value : QuestionType.values()) {
             subMenu.addItem(value.getTitle(), event -> openEditor(value));
         }
-
-        disciplineFilter.setPlaceholder("Дисциплина");
-        disciplineFilter.addValueChangeListener(event -> showItems());
     }
 
     private void openEditor(QuestionType value) {
@@ -102,7 +99,7 @@ public class QuestionView extends VerticalLayout {
 
         Discipline discipline = disciplineFilter.getValue();
         if (discipline == null) {
-            UIUtils.errorNotification("Сначала выберите дисциплину", 2);
+            UIUtils.errorNotification("Сначала нужно выбрать дисциплину", 2);
             return;
         }
 
@@ -121,7 +118,9 @@ public class QuestionView extends VerticalLayout {
         disciplineFilter.setItems(disciplineService.findAll());
         disciplineFilter.setItemLabelGenerator(Discipline::getTitle);
         disciplineFilter.addValueChangeListener(event -> showItems());
+        disciplineFilter.setPlaceholder("Дисциплина");
 
+        difficultyFilter.setPlaceholder("Сложность");
         difficultyFilter.setItems(Difficulty.values());
         difficultyFilter.setItemLabelGenerator(Difficulty::getTitle);
         difficultyFilter.addValueChangeListener(event -> showItems());
@@ -155,18 +154,17 @@ public class QuestionView extends VerticalLayout {
     private void setupGridColumns() {
         grid.removeAllColumns();
         grid.addColumn(QuestionInfo::getId)
-                .setHeader("ID")
-                .setWidth("100px")
-                .setFlexGrow(0)
-                .setAutoWidth(false);
+            .setHeader("ID")
+            .setAutoWidth(true);
         grid.addColumn(QuestionInfo::getTitle)
-            .setHeader("Название");
+            .setHeader("Название")
+            .setAutoWidth(true);
         grid.addColumn(info -> info.getDifficulty().getTitle())
             .setHeader("Сложность")
-            .setWidth("100px")
-            .setAutoWidth(false);
+            .setAutoWidth(true);
         grid.addColumn(it -> it.getType().getTitle())
-            .setHeader("Тип вопроса");
+            .setHeader("Тип вопроса")
+            .setAutoWidth(true);
     }
 
     @AllArgsConstructor
