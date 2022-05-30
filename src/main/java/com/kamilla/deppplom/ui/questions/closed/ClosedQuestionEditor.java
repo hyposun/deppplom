@@ -3,8 +3,8 @@ package com.kamilla.deppplom.ui.questions.closed;
 import com.kamilla.deppplom.question.QuestionService;
 import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
 import com.kamilla.deppplom.question.model.Difficulty;
-import com.kamilla.deppplom.ui.AbstractDialog;
-import com.kamilla.deppplom.ui.UIUtils;
+import com.kamilla.deppplom.ui.utils.AbstractDialog;
+import com.kamilla.deppplom.ui.utils.UIUtils;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.kamilla.deppplom.ui.UIUtils.errorNotification;
-import static com.kamilla.deppplom.ui.UIUtils.successNotification;
+import static com.kamilla.deppplom.ui.utils.UIUtils.errorNotification;
+import static com.kamilla.deppplom.ui.utils.UIUtils.successNotification;
 
 @SpringComponent
 @UIScope

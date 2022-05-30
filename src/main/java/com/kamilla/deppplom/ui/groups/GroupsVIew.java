@@ -41,6 +41,7 @@ public class GroupsVIew extends VerticalLayout {
 
         filter.setValueChangeMode(ValueChangeMode.EAGER);
         filter.addValueChangeListener(event -> showGroups(event.getValue()));
+        filter.setPrefixComponent(VaadinIcon.SEARCH.create());
 
         grid.asSingleSelect()
             .addValueChangeListener(event -> editor.editGroup(event.getValue()));

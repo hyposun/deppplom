@@ -25,7 +25,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.kamilla.deppplom.ui.UIUtils.successNotification;
+import static com.kamilla.deppplom.ui.utils.UIUtils.successNotification;
 
 @SpringComponent
 @UIScope

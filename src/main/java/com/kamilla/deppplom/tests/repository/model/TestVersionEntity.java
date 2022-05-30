@@ -4,6 +4,7 @@ import com.kamilla.deppplom.question.repository.QuestionEntity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,7 +16,7 @@ public class TestVersionEntity {
     @GeneratedValue
     private int id;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<QuestionEntity> questions;
 
 }

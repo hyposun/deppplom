@@ -19,7 +19,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Setter;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.kamilla.deppplom.ui.UIUtils.successNotification;
+import static com.kamilla.deppplom.ui.utils.UIUtils.successNotification;
 
 @SpringComponent
 @UIScope

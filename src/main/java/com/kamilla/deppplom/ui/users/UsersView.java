@@ -29,7 +29,6 @@ import static java.util.stream.Collectors.toList;
 @RolesAllowed("ADMIN")
 public class UsersView extends VerticalLayout {
 
-    private UserRepository repository;
     private UserService service;
     private StudentGroupService studentGroupService;
 
@@ -44,12 +43,12 @@ public class UsersView extends VerticalLayout {
     private UserEditor userEditor;
 
     @Autowired
-    public UsersView(UserRepository repository, UserService service, StudentGroupService groupService, UserEditor userEditor) {
-        this.repository = repository;
+    public UsersView(UserService service, StudentGroupService groupService, UserEditor userEditor) {
         this.service = service;
         studentGroupService = groupService;
         this.userEditor = userEditor;
         add(toolbar, grid);
+        toolbar.setAlignItems(Alignment.START);
         setupInteractions();
         showUsers();
         setupColumns();
@@ -69,6 +68,7 @@ public class UsersView extends VerticalLayout {
 
         nameFilter.setValueChangeMode(ValueChangeMode.EAGER);
         nameFilter.addValueChangeListener(event -> showUsers());
+        nameFilter.setPrefixComponent(VaadinIcon.SEARCH.create());
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             this.userEditor.editUser(event.getValue());

@@ -16,6 +16,6 @@ public class CreateTestRequest {
     private int disciplineId;
 
     @Positive
-    private int minimumPoints;
+    private float minimumPoints;
 
 }
