@@ -39,6 +39,7 @@ public class DisciplineView extends VerticalLayout {
     private void setupInteractivity() {
         filter.setValueChangeMode(ValueChangeMode.EAGER);
         filter.addValueChangeListener(event -> showItems(event.getValue()));
+        filter.setPrefixComponent(VaadinIcon.SEARCH.create());
 
         grid.asSingleSelect()
             .addValueChangeListener(event -> editor.editItem(event.getValue()));

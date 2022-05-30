@@ -1,4 +1,4 @@
-package com.kamilla.deppplom.ui;
+package com.kamilla.deppplom.ui.utils;
 
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;

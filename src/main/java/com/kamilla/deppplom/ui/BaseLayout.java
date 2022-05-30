@@ -4,6 +4,7 @@ import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.discipline.DisciplineView;
 import com.kamilla.deppplom.ui.groups.GroupsVIew;
 import com.kamilla.deppplom.ui.questions.QuestionView;
+import com.kamilla.deppplom.ui.test.TestsView;
 import com.kamilla.deppplom.ui.users.UsersView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -12,13 +13,11 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
-import com.vaadin.flow.shared.ui.Transport;
 
 import javax.annotation.security.PermitAll;
 
@@ -52,6 +51,7 @@ public class BaseLayout extends AppLayout {
         addTab(tabs, VaadinIcon.GROUP, "Группы", GroupsVIew.class);
         addTab(tabs, VaadinIcon.AIRPLANE, "Дисциплины", DisciplineView.class);
         addTab(tabs, VaadinIcon.QUESTION, "Вопросы", QuestionView.class);
+        addTab(tabs, VaadinIcon.FOLDER, "Тесты", TestsView.class);
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }

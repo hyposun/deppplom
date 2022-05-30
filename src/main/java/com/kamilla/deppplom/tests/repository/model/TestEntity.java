@@ -22,9 +22,9 @@ public class TestEntity {
     private int disciplineId;
 
     @Column(nullable = false)
-    private int minimumPoints;
+    private float minimumPoints;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<TestVersionEntity> versions = new ArrayList<>();
 
 }
