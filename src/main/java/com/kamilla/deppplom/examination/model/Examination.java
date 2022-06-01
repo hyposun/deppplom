@@ -26,4 +26,6 @@ public class Examination {
 
     float points;
 
+    int groupExaminationId;
+
 }

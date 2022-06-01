@@ -35,6 +35,9 @@ public class ExaminationEntity {
     private float points;
 
     @Column(nullable = false)
+    private int groupExaminationId;
+
+    @Column(nullable = false)
     @OneToMany
     private List<QuestionExaminationEntity> resultList = new ArrayList<>();
 

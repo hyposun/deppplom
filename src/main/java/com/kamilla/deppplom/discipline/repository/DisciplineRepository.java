@@ -4,7 +4,6 @@ import com.kamilla.deppplom.discipline.Discipline;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,5 +17,9 @@ public interface DisciplineRepository extends JpaRepository<Discipline, Integer>
     Page<Discipline> findAllByTitleLike(String title, Pageable pageable);
 
     List<Discipline> findAllByTitleLike(String title);
+
+    List <Discipline> findAllByParentId(int parentId);
+
+    Optional <Discipline> findByTitleAndParentId(String title, int parentId);
 
 }

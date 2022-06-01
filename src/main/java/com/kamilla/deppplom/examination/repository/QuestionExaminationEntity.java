@@ -22,4 +22,7 @@ public class QuestionExaminationEntity {
     @Column
     private float resultPoints;
 
+    @Column
+    private int groupExaminationId;
+
 }
