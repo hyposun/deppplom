@@ -63,7 +63,7 @@ public class GroupsVIew extends VerticalLayout {
         grid.removeAllColumns();
         grid.addColumn(StudentGroup::getId)
             .setHeader("ID")
-            .setWidth("50px")
+            .setWidth("100px")
             .setFlexGrow(0)
             .setAutoWidth(false);
         grid.addColumn(StudentGroup::getTitle)

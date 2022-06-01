@@ -3,14 +3,13 @@ package com.kamilla.deppplom.ui.questions;
 import com.kamilla.deppplom.discipline.Discipline;
 import com.kamilla.deppplom.discipline.DisciplineService;
 import com.kamilla.deppplom.question.QuestionService;
-import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
 import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
 import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.QuestionType;
 import com.kamilla.deppplom.ui.BaseLayout;
-import com.kamilla.deppplom.ui.utils.UIUtils;
-import com.kamilla.deppplom.ui.questions.closed.ClosedQuestionEditor;
+import com.kamilla.deppplom.ui.questions.closed.ClosedQuestionView;
 import com.kamilla.deppplom.ui.questions.ordered.OrderedCloseQuestionEditor;
+import com.kamilla.deppplom.ui.utils.UIUtils;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
@@ -22,11 +21,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteParam;
+import com.vaadin.flow.router.RouteParameters;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +40,6 @@ public class QuestionView extends VerticalLayout {
 
     private QuestionService questionService;
     private DisciplineService disciplineService;
-    private ClosedQuestionEditor closedQuestionEditor;
     private OrderedCloseQuestionEditor orderedCloseQuestionEditor;
 
     private Grid<QuestionInfo> grid = new Grid<>(QuestionInfo.class);
@@ -52,11 +53,9 @@ public class QuestionView extends VerticalLayout {
     public QuestionView(
             QuestionService questionService,
             DisciplineService disciplineService,
-            ClosedQuestionEditor closedQuestionEditor,
             OrderedCloseQuestionEditor orderedCloseQuestionEditor) {
         this.questionService = questionService;
         this.disciplineService = disciplineService;
-        this.closedQuestionEditor = closedQuestionEditor;
         this.orderedCloseQuestionEditor = orderedCloseQuestionEditor;
         add(toolbar, grid);
         setHeightFull();
@@ -69,7 +68,6 @@ public class QuestionView extends VerticalLayout {
 
     private void setupEditors() {
 
-        closedQuestionEditor.setOnClose(this::showItems);
         orderedCloseQuestionEditor.setOnClose(this::showItems);
 
         grid.asSingleSelect()
@@ -77,7 +75,7 @@ public class QuestionView extends VerticalLayout {
                 if (event.getValue() == null) return;
                 var question = questionService.findQuestionById(event.getValue().id).get();
                 if (question.getType() == QuestionType.CLOSED) {
-                    closedQuestionEditor.editQuestion((ClosedQuestion) question);
+                    openClosedQuestion(question.getId(), question.getDisciplineId());
                 }
                 if (question.getType() == QuestionType.CLOSED_ORDERED) {
                     orderedCloseQuestionEditor.editQuestion((OrderedClosedQuestion) question);
@@ -94,7 +92,6 @@ public class QuestionView extends VerticalLayout {
 
     private void openEditor(QuestionType value) {
 
-        closedQuestionEditor.setOnClose(this::showItems);
         orderedCloseQuestionEditor.setOnClose(this::showItems);
 
         Discipline discipline = disciplineFilter.getValue();
@@ -104,9 +101,7 @@ public class QuestionView extends VerticalLayout {
         }
 
         if (value == QuestionType.CLOSED) {
-            ClosedQuestion question = new ClosedQuestion();
-            question.setDisciplineId(discipline.getId());
-            closedQuestionEditor.editQuestion(question);
+            openClosedQuestion(0, discipline.getId());
         } else if (value == QuestionType.CLOSED_ORDERED) {
             OrderedClosedQuestion question = new OrderedClosedQuestion();
             question.setDisciplineId(discipline.getId());
@@ -114,8 +109,21 @@ public class QuestionView extends VerticalLayout {
         }
     }
 
+    private void openClosedQuestion(int questionId, int disciplineId) {
+        getUI().ifPresent(ui -> {
+            RouteParam questionParam = new RouteParam("questionId", String.valueOf(questionId));
+            RouteParam disciplineParam = new RouteParam("disciplineId", String.valueOf(disciplineId));
+            RouteParameters parameters = new RouteParameters(questionParam, disciplineParam);
+            ui.navigate(ClosedQuestionView.class, parameters);
+        });
+    }
+
     private void setupFilters() {
-        disciplineFilter.setItems(disciplineService.findAll());
+
+        List<Discipline> disciplines = disciplineService.findAll();
+        disciplineFilter.setItems(disciplines);
+        disciplines.stream().findFirst()
+                .ifPresent(it -> disciplineFilter.setValue(it));
         disciplineFilter.setItemLabelGenerator(Discipline::getTitle);
         disciplineFilter.addValueChangeListener(event -> showItems());
         disciplineFilter.setPlaceholder("Дисциплина");
@@ -178,6 +186,7 @@ public class QuestionView extends VerticalLayout {
         protected Difficulty difficulty;
 
         protected QuestionType type;
+
     }
 
 }

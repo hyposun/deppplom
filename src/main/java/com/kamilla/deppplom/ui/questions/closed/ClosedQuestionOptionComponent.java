@@ -30,6 +30,8 @@ public class ClosedQuestionOptionComponent extends HorizontalLayout {
         if (title != null) this.title.setValue(title);
         this.valid.setValue(valid);
 
+        setWidthFull();
+
         add(this.id, this.title, this.valid, remove);
 
         setVerticalComponentAlignment(Alignment.CENTER);

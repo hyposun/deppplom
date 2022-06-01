@@ -16,7 +16,7 @@ import lombok.Setter;
 })
 public abstract class Question {
 
-    protected int id;
+    protected int id = 0;
 
     protected String title;
 
