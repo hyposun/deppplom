@@ -14,10 +14,16 @@ public class DisciplineService {
     private DisciplineRepository repository;
 
     public Discipline update(Discipline discipline) {
-        var existing = repository.findByTitle(discipline.getTitle());
+        int parentId = discipline.getParentId();
+        var existing = repository.findByTitleAndParentId(discipline.getTitle(), parentId);
         if (existing.isPresent()) {
             throw new IllegalArgumentException("Дисциплина с таким названием уже существует");
         }
+        if (parentId != 0) {
+            Optional<Discipline> parentDiscipline = findById(parentId);
+            if (parentDiscipline.isEmpty()) throw new IllegalArgumentException("Вы пытаетесь привязать тему к несуществущей дисциплине");
+        }
+
         return repository.save(discipline);
     }
 
@@ -35,6 +41,14 @@ public class DisciplineService {
 
     public List<Discipline> findAll() {
         return repository.findAll();
+    }
+
+    public List <Discipline> findAllByParentId(int parentId){
+        return repository.findAllByParentId(parentId);
+    }
+
+    public Optional <Discipline> findByTitleAndParentId(String title, int parentId){
+        return repository.findByTitleAndParentId(title, parentId);
     }
 
 

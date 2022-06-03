@@ -18,4 +18,7 @@ public class Discipline {
     @NotBlank
     private String title;
 
+    @Column
+    private int parentId;
+
 }

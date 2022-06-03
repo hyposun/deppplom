@@ -1,12 +1,14 @@
 package com.kamilla.deppplom.question.model;
 
 import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
+import com.kamilla.deppplom.question.impl.openquestion.OpenQuestion;
 import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
 
 public enum QuestionType {
 
     CLOSED("closed_question", "Закрытый вопрос", ClosedQuestion.class),
-    CLOSED_ORDERED("ordered_closed_question", "Закрытый упорядоченный вопрос", OrderedClosedQuestion.class);
+    CLOSED_ORDERED("ordered_closed_question", "Закрытый упорядоченный вопрос", OrderedClosedQuestion.class),
+    OPENED("opened_question","Открытый вопрос", OpenQuestion.class);
 
     private final String type;
     private final String title;
