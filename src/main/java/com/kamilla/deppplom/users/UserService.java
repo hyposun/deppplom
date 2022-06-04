@@ -23,16 +23,16 @@ public class UserService {
         if (user.getId() == 0) {
             Optional<User> existingUser = repository.findByLogin(user.getLogin());
             if (existingUser.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователем с таким логином уже существует");
+                throw new IllegalStateException("Пользователем с таким логином уже существует");
             }
         }
 
         if (user.getRole() == Role.STUDENT) {
             if (user.getGroups().size() <= 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "У студента должна быть проставлена группа");
+                throw new IllegalStateException("У студента должна быть проставлена группа");
             }
             if (user.getGroups().size() > 1) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "У студента может быть только одна группа");
+                throw new IllegalStateException("У студента может быть только одна группа");
             }
         }
 
@@ -73,6 +73,10 @@ public class UserService {
         }
 
         return stream.collect(Collectors.toList());
+    }
+
+    public void delete(int id) {
+        repository.deleteById(id);
     }
 
 }

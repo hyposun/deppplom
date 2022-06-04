@@ -8,6 +8,7 @@ import com.kamilla.deppplom.users.UserService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -43,8 +44,9 @@ public class UserEditor extends Dialog implements KeyNotifier {
     private MultiSelectListBox<StudentGroup> groups = new MultiSelectListBox<>();
 
     private Button save = new Button("Сохранить", VaadinIcon.CHECK.create());
+    private Button delete = new Button("Удалить");
     private Button cancel = new Button("Отмена");
-    private HorizontalLayout actions = new HorizontalLayout(save, cancel);
+    private HorizontalLayout actions = new HorizontalLayout(save, delete, cancel);
 
     private Binder<User> binder = new Binder<>(User.class);
 
@@ -78,6 +80,8 @@ public class UserEditor extends Dialog implements KeyNotifier {
         addKeyPressListener(Key.ENTER, event -> save());
         save.addClickListener(event -> save());
         cancel.addClickListener(event -> close());
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        delete.addClickListener(event -> delete());
     }
 
     private void setupLayout() {
@@ -90,6 +94,13 @@ public class UserEditor extends Dialog implements KeyNotifier {
         layout.add(groups, 2);
         layout.setVisible(true);
         add(layout, actions);
+    }
+
+    private void delete() {
+        userService.delete(user.getId());
+        changeHandler.onChange();
+        setVisible(false);
+        successNotification("Пользователь '" + user.getName() + "' удален", 2);
     }
 
     private void save() {

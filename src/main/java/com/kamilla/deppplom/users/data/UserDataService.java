@@ -26,8 +26,7 @@ public class UserDataService {
 
     private final CsvMapper mapper = new CsvMapper();
 
-
-  public List<User> getUsersFromCsv(InputStream inputStream) throws IOException {
+    public List<User> getUsersFromCsv(InputStream inputStream) throws IOException {
 
         byte[] bytes = inputStream.readAllBytes();
         String data = new String(bytes);
@@ -41,7 +40,7 @@ public class UserDataService {
         return it.readAll()
                 .stream()
                 .map(item -> {
-                   User user = new User();
+                    User user = new User();
                     user.setRole(item.role);
                     user.setGroups(getGroups(item.groups));
                     user.setPassword(item.password);

@@ -3,10 +3,12 @@ package com.kamilla.deppplom.ui.users;
 import com.kamilla.deppplom.groups.StudentGroup;
 import com.kamilla.deppplom.groups.StudentGroupService;
 import com.kamilla.deppplom.ui.BaseLayout;
+import com.kamilla.deppplom.ui.utils.UIUtils;
 import com.kamilla.deppplom.users.Role;
 import com.kamilla.deppplom.users.User;
 import com.kamilla.deppplom.users.UserRepository;
 import com.kamilla.deppplom.users.UserService;
+import com.kamilla.deppplom.users.data.UserDataService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -14,15 +16,20 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.security.RolesAllowed;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.kamilla.deppplom.ui.utils.UIUtils.errorNotification;
+import static com.kamilla.deppplom.ui.utils.UIUtils.successNotification;
 import static java.util.stream.Collectors.toList;
 
 @Route(value = "users", layout = BaseLayout.class)
@@ -38,15 +45,24 @@ public class UsersView extends VerticalLayout {
     private Select<StudentGroup> groupFilter = new Select<>();
     private Button reset = new Button("Сброс", VaadinIcon.CLOSE.create());
     private Button addNew = new Button("Добавить", VaadinIcon.PLUS.create());
-    private HorizontalLayout toolbar = new HorizontalLayout(nameFilter, roleFilter, groupFilter, reset, addNew);
+    private MemoryBuffer memoryBuffer = new MemoryBuffer();
+    private Upload upload = new Upload(memoryBuffer);
+    private HorizontalLayout toolbar = new HorizontalLayout(nameFilter, roleFilter, groupFilter, reset, addNew, upload);
 
     private UserEditor userEditor;
+    private UserDataService userDataService;
 
     @Autowired
-    public UsersView(UserService service, StudentGroupService groupService, UserEditor userEditor) {
+    public UsersView(
+            UserService service,
+            StudentGroupService groupService,
+            UserEditor userEditor,
+            UserDataService userDataService
+    ) {
         this.service = service;
-        studentGroupService = groupService;
+        this.studentGroupService = groupService;
         this.userEditor = userEditor;
+        this.userDataService = userDataService;
         add(toolbar, grid);
         toolbar.setAlignItems(Alignment.START);
         setupInteractions();
@@ -84,6 +100,24 @@ public class UsersView extends VerticalLayout {
             groupFilter.clear();
         });
 
+        upload.setUploadButton(new Button("Импорт", VaadinIcon.FILE.create()));
+        upload.setAcceptedFileTypes(".csv");
+        upload.setMaxFiles(1);
+        upload.setDropAllowed(false);
+        upload.addSucceededListener(event -> importFromFile());
+
+    }
+
+    private void importFromFile() {
+        try {
+            List<User> users = userDataService.getUsersFromCsv(memoryBuffer.getInputStream());
+            upload.clearFileList();
+            showUsers();
+            successNotification("Пользователей успешно загружено: " + users.size(), 2);
+        } catch (Exception e) {
+            upload.clearFileList();
+            errorNotification("Не удалось загрузить пользователей из файла, проверьте корректность данных: " + e.getMessage(), 3);
+        }
     }
 
     private void showUsers() {
