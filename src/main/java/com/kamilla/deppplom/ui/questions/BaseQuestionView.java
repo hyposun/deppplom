@@ -15,9 +15,7 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.RouteParameters;
+import com.vaadin.flow.router.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.List;
@@ -26,7 +24,7 @@ import static com.kamilla.deppplom.ui.utils.UIUtils.errorNotification;
 import static com.kamilla.deppplom.ui.utils.UIUtils.successNotification;
 
 @SuppressWarnings("unchecked")
-abstract class BaseQuestionView<T extends Question> extends VerticalLayout implements BeforeEnterObserver {
+public abstract class BaseQuestionView<T extends Question> extends VerticalLayout implements BeforeEnterObserver, BeforeLeaveObserver {
 
     protected QuestionService questionService;
     protected T question;
@@ -67,16 +65,21 @@ abstract class BaseQuestionView<T extends Question> extends VerticalLayout imple
 
     }
 
-    abstract Class<T> getQuestionType();
+    protected abstract Class<T> getQuestionType();
 
-    abstract T buildNewQuestion();
+    protected abstract T buildNewQuestion();
 
-    abstract List<Component> getAdditionComponents();
+    protected abstract List<Component> getAdditionComponents();
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         question = getQuestion(event);
         binder.setBean(question);
+    }
+
+    @Override
+    public void beforeLeave(BeforeLeaveEvent event) {
+
     }
 
     private T getQuestion(BeforeEnterEvent event) {
@@ -92,7 +95,7 @@ abstract class BaseQuestionView<T extends Question> extends VerticalLayout imple
         });
 
         if (question.getClass() != getQuestionType()) {
-            event.getUI().navigate(QuestionView.class);
+            navigateToQuestionsView();
             errorNotification("Некорректный тип вопроса", 3);
         }
 
@@ -104,16 +107,21 @@ abstract class BaseQuestionView<T extends Question> extends VerticalLayout imple
             questionService.deleteById(question.getId());
             successNotification("Вопрос удален", 2);
         }
-        getUI().ifPresent(ui -> ui.navigate(QuestionView.class));
+        navigateToQuestionsView();
     }
 
     protected void save() {
         questionService.save(question);
         successNotification("Изменения сохранены", 2);
+        navigateToQuestionsView();
     }
 
     private void cancel() {
-        getUI().ifPresent(ui -> ui.navigate(QuestionView.class));
+        navigateToQuestionsView();
+    }
+
+    private void navigateToQuestionsView() {
+        getUI().ifPresent(ui -> ui.navigate(QuestionsView.class));
     }
 
     protected void setFullWidth(HasSize... components) {

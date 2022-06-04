@@ -3,7 +3,7 @@ package com.kamilla.deppplom.ui;
 import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.discipline.DisciplineView;
 import com.kamilla.deppplom.ui.groups.GroupsVIew;
-import com.kamilla.deppplom.ui.questions.QuestionView;
+import com.kamilla.deppplom.ui.questions.QuestionsView;
 import com.kamilla.deppplom.ui.test.TestsView;
 import com.kamilla.deppplom.ui.users.UsersView;
 import com.vaadin.flow.component.Component;
@@ -50,7 +50,7 @@ public class BaseLayout extends AppLayout {
         addTab(tabs, VaadinIcon.USERS, "Пользователи", UsersView.class);
         addTab(tabs, VaadinIcon.GROUP, "Группы", GroupsVIew.class);
         addTab(tabs, VaadinIcon.AIRPLANE, "Дисциплины", DisciplineView.class);
-        addTab(tabs, VaadinIcon.QUESTION, "Вопросы", QuestionView.class);
+        addTab(tabs, VaadinIcon.QUESTION, "Вопросы", QuestionsView.class);
         addTab(tabs, VaadinIcon.FOLDER, "Тесты", TestsView.class);
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;

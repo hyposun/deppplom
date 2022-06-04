@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @Route(value = "questions", layout = BaseLayout.class)
 @RolesAllowed({"ADMIN", "TEACHER"})
 @PageTitle("Deppplom | Вопросы")
-public class QuestionView extends VerticalLayout {
+public class QuestionsView extends VerticalLayout {
 
     private QuestionService questionService;
     private DisciplineService disciplineService;
@@ -50,7 +50,7 @@ public class QuestionView extends VerticalLayout {
     private MenuBar addMenuBar = new MenuBar();
     private HorizontalLayout toolbar = new HorizontalLayout(disciplineFilter, difficultyFilter, reset, addMenuBar);
 
-    public QuestionView(
+    public QuestionsView(
             QuestionService questionService,
             DisciplineService disciplineService,
             OrderedCloseQuestionEditor orderedCloseQuestionEditor) {
