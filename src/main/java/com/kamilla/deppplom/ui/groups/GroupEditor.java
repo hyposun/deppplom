@@ -2,9 +2,11 @@ package com.kamilla.deppplom.ui.groups;
 
 import com.kamilla.deppplom.groups.StudentGroup;
 import com.kamilla.deppplom.groups.StudentGroupService;
+import com.kamilla.deppplom.ui.utils.UIUtils;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -33,9 +35,10 @@ public class GroupEditor extends Dialog implements KeyNotifier {
 
     private Binder<StudentGroup> binder = new Binder<>(StudentGroup.class);
     private TextField title = new TextField("Название");
-    private Button save = new Button("Сохранить", VaadinIcon.CHECK.create());
-    private Button cancel = new Button("Отмена");
-    private HorizontalLayout actions = new HorizontalLayout(save, cancel);
+    private Button saveButton = new Button("Сохранить", VaadinIcon.CHECK.create());
+    private Button deleteButton = new Button("Удалить", VaadinIcon.TRASH.create());
+    private Button cancelButton = new Button("Отмена");
+    private HorizontalLayout actions = new HorizontalLayout(saveButton, deleteButton, cancelButton);
 
     public GroupEditor(StudentGroupService service) {
 
@@ -49,11 +52,20 @@ public class GroupEditor extends Dialog implements KeyNotifier {
         binder.bindInstanceFields(this);
 
         addKeyPressListener(Key.ENTER, event -> save());
-        save.getElement().getThemeList().add("primary");
+        saveButton.getElement().getThemeList().add("primary");
 
-        save.addClickListener(event -> save());
-        cancel.addClickListener(event -> setVisible(false));
+        saveButton.addClickListener(event -> save());
+        cancelButton.addClickListener(event -> setVisible(false));
+        deleteButton.addClickListener(event -> delete());
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
+    }
+
+    private void delete() {
+        service.delete(group.getId());
+        onClose.run();
+        setVisible(false);
+        successNotification("Группа удалена", 2);
     }
 
     public void editGroup(StudentGroup value) {

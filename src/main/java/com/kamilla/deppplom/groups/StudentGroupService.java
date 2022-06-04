@@ -40,4 +40,7 @@ public class StudentGroupService {
         return repository.findAll(pageable);
     }
 
+    public void delete(int id) {
+        repository.deleteById(id);
+    }
 }

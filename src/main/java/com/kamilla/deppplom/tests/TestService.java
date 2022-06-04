@@ -43,9 +43,22 @@ public class TestService {
                 .collect(toList());
     }
 
+//    public Test update(Test test) {
+//
+//        Discipline discipline = test.getDiscipline();
+//        verifyCollision(test.getTitle(), discipline.getId());
+//        getDiscipline(discipline.getId());
+//
+//        TestEntity entity = new TestEntity();
+//        entity.setId(test.getId());
+//        entity.setTitle(test.getTitle());
+//        entity.setVersions();
+//
+//    }
+
     public Test createTest(CreateTestRequest request) {
 
-        verifyCollision(request);
+        verifyCollision(request.getTitle(), request.getDisciplineId());
         getDiscipline(request.getDisciplineId());
 
         TestEntity entity = new TestEntity();
@@ -176,10 +189,14 @@ public class TestService {
                 .collect(toList());
     }
 
-    private void verifyCollision(CreateTestRequest request) {
-        Optional<TestEntity> existingTest = testRepository.findByTitleAndDisciplineId(request.getTitle(), request.getDisciplineId());
+    private void verifyCollision(String title, int disciplineId) {
+        Optional<TestEntity> existingTest = testRepository.findByTitleAndDisciplineId(title, disciplineId);
         if (existingTest.isPresent()) {
             throw new IllegalArgumentException("Тест c таким именем и дисциплиной уже существует");
         }
+    }
+
+    public void delete(int id) {
+        testRepository.deleteById(id);
     }
 }

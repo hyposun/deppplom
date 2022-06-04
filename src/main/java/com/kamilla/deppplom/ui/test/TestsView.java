@@ -5,21 +5,18 @@ import com.kamilla.deppplom.discipline.DisciplineService;
 import com.kamilla.deppplom.tests.TestService;
 import com.kamilla.deppplom.tests.model.Test;
 import com.kamilla.deppplom.ui.BaseLayout;
-import com.kamilla.deppplom.ui.utils.UIUtils;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteParameters;
+import com.vaadin.flow.router.*;
 
 import javax.annotation.security.RolesAllowed;
-
 import java.util.List;
 
+import static com.kamilla.deppplom.ui.utils.UIUtils.errorNotification;
 import static java.util.Collections.emptyList;
 
 @SuppressWarnings("FieldMayBeFinal")
@@ -35,7 +32,6 @@ public class TestsView extends VerticalLayout {
     private Grid<Test> grid = new Grid<>();
 
     public TestsView(
-            TestAddEditor testAddEditor,
             TestService testService,
             DisciplineService disciplineService
     ) {
@@ -49,14 +45,10 @@ public class TestsView extends VerticalLayout {
         disciplineSelect.setItemLabelGenerator(Discipline::getTitle);
         disciplineSelect.addValueChangeListener(event -> refreshItems());
 
-        testAddEditor.setOnClose(this::refreshItems);
         grid.asSingleSelect()
                 .addValueChangeListener(event -> {
-                    if (event.getValue() == null) return;
-                    getUI().ifPresent(it -> {
-                        var params = new RouteParameters("testId", String.valueOf(event.getValue().getId()));
-                        it.navigate(TestInformationComponent.class, params);
-                    });
+                    Test value = event.getValue();
+                    if (value != null) navigateToEditor(value.getId());
                 });
 
         grid.removeAllColumns();
@@ -70,19 +62,26 @@ public class TestsView extends VerticalLayout {
                 .setHeader("Пропускной балл");
 
         addButton = new Button("Добавить", VaadinIcon.PLUS.create());
-        addButton.addClickListener(event -> {
-            if (disciplineSelect.isEmpty()) {
-                UIUtils.errorNotification("Сначала нужно выбрать дисциплину", 2);
-                return;
-            }
-            testAddEditor.start(disciplineSelect.getValue().getId());
-        });
+        addButton.addClickListener(event -> navigateToEditor(0));
 
         HorizontalLayout toolbar = new HorizontalLayout(disciplineSelect, addButton);
         add(toolbar, grid);
         setHeightFull();
 
         refreshItems();
+    }
+
+    private void navigateToEditor(int testId) {
+        if (disciplineSelect.isEmpty()) {
+            errorNotification("Сначала нужно выбрать дисциплину", 2);
+            return;
+        }
+        Discipline discipline = disciplineSelect.getValue();
+        getUI().ifPresent(it -> {
+            var testIdParam = new RouteParam("testId", String.valueOf(testId));
+            var disciplineIdParam = new RouteParam("disciplineId", String.valueOf(discipline.getId()));
+            it.navigate(TestEditorView.class, new RouteParameters(disciplineIdParam, testIdParam));
+        });
     }
 
     private void refreshItems() {

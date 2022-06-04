@@ -92,7 +92,7 @@ public class TestAddEditor extends Dialog implements KeyNotifier {
         successNotification("Тест зарегистрирован", 2);
         getUI().ifPresent(ui -> {
             var params = new RouteParameters("testId", String.valueOf(test.getId()));
-            ui.navigate(TestInformationComponent.class, params);
+            ui.navigate(TestEditorView.class, params);
         });
 
     }
