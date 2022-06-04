@@ -18,6 +18,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.kamilla.deppplom.ui.utils.UIUtils.errorNotification;
@@ -48,9 +49,10 @@ public abstract class BaseQuestionView<T extends Question> extends VerticalLayou
         binder.bindInstanceFields(this);
 
         add(new H1("Редактирование вопроса"));
+        getAdditionalInputs().forEach(inputsLayout::add);
         add(inputsLayout);
         getAdditionComponents().forEach(this::add);
-        add(actionsLayout);
+        add(new VerticalLayout(actionsLayout));
 
         id.setReadOnly(true);
         difficulty.setItemLabelGenerator(Difficulty::getTitle);
@@ -65,11 +67,17 @@ public abstract class BaseQuestionView<T extends Question> extends VerticalLayou
 
     }
 
+    protected List<Component> getAdditionalInputs() {
+        return Collections.emptyList();
+    }
+
     protected abstract Class<T> getQuestionType();
 
     protected abstract T buildNewQuestion();
 
-    protected abstract List<Component> getAdditionComponents();
+    protected List<Component> getAdditionComponents() {
+        return Collections.emptyList();
+    }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {

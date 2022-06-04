@@ -7,6 +7,7 @@ import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.QuestionType;
 import com.kamilla.deppplom.ui.BaseLayout;
 import com.kamilla.deppplom.ui.questions.closed.ClosedQuestionView;
+import com.kamilla.deppplom.ui.questions.opened.OpenQuestionView;
 import com.kamilla.deppplom.ui.questions.ordered.OrderedClosedQuestionView;
 import com.kamilla.deppplom.ui.utils.UIUtils;
 import com.vaadin.flow.component.Component;
@@ -93,6 +94,7 @@ public class QuestionsView extends VerticalLayout {
         switch (type) {
             case CLOSED: view = ClosedQuestionView.class; break;
             case CLOSED_ORDERED: view = OrderedClosedQuestionView.class; break;
+            case OPENED: view = OpenQuestionView.class; break;
             default: {
                 UIUtils.errorNotification("Тип вопроса не поддерживается", 2);
                 return;
