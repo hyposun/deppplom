@@ -3,13 +3,13 @@ package com.kamilla.deppplom.ui.questions;
 import com.kamilla.deppplom.discipline.Discipline;
 import com.kamilla.deppplom.discipline.DisciplineService;
 import com.kamilla.deppplom.question.QuestionService;
-import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
 import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.QuestionType;
 import com.kamilla.deppplom.ui.BaseLayout;
 import com.kamilla.deppplom.ui.questions.closed.ClosedQuestionView;
-import com.kamilla.deppplom.ui.questions.ordered.OrderedCloseQuestionEditor;
+import com.kamilla.deppplom.ui.questions.ordered.OrderedClosedQuestionView;
 import com.kamilla.deppplom.ui.utils.UIUtils;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
@@ -40,7 +40,6 @@ public class QuestionsView extends VerticalLayout {
 
     private QuestionService questionService;
     private DisciplineService disciplineService;
-    private OrderedCloseQuestionEditor orderedCloseQuestionEditor;
 
     private Grid<QuestionInfo> grid = new Grid<>(QuestionInfo.class);
     private Select<Discipline> disciplineFilter = new Select<>();
@@ -52,11 +51,10 @@ public class QuestionsView extends VerticalLayout {
 
     public QuestionsView(
             QuestionService questionService,
-            DisciplineService disciplineService,
-            OrderedCloseQuestionEditor orderedCloseQuestionEditor) {
+            DisciplineService disciplineService
+    ) {
         this.questionService = questionService;
         this.disciplineService = disciplineService;
-        this.orderedCloseQuestionEditor = orderedCloseQuestionEditor;
         add(toolbar, grid);
         setHeightFull();
 
@@ -68,31 +66,22 @@ public class QuestionsView extends VerticalLayout {
 
     private void setupEditors() {
 
-        orderedCloseQuestionEditor.setOnClose(this::showItems);
-
         grid.asSingleSelect()
             .addValueChangeListener(event -> {
                 if (event.getValue() == null) return;
                 var question = questionService.findQuestionById(event.getValue().id).get();
-                if (question.getType() == QuestionType.CLOSED) {
-                    openClosedQuestion(question.getId(), question.getDisciplineId());
-                }
-                if (question.getType() == QuestionType.CLOSED_ORDERED) {
-                    orderedCloseQuestionEditor.editQuestion((OrderedClosedQuestion) question);
-                }
+                openQuestionEditor(question.getType(), question.getId());
             });
 
         MenuItem item = addMenuBar.addItem("Добавить");
         SubMenu subMenu = item.getSubMenu();
 
         for (QuestionType value : QuestionType.values()) {
-            subMenu.addItem(value.getTitle(), event -> openEditor(value));
+            subMenu.addItem(value.getTitle(), event -> openQuestionEditor(value, 0));
         }
     }
 
-    private void openEditor(QuestionType value) {
-
-        orderedCloseQuestionEditor.setOnClose(this::showItems);
+    private void openQuestionEditor(QuestionType type, int questionId) {
 
         Discipline discipline = disciplineFilter.getValue();
         if (discipline == null) {
@@ -100,21 +89,21 @@ public class QuestionsView extends VerticalLayout {
             return;
         }
 
-        if (value == QuestionType.CLOSED) {
-            openClosedQuestion(0, discipline.getId());
-        } else if (value == QuestionType.CLOSED_ORDERED) {
-            OrderedClosedQuestion question = new OrderedClosedQuestion();
-            question.setDisciplineId(discipline.getId());
-            orderedCloseQuestionEditor.editQuestion(question);
+        Class<? extends Component> view;
+        switch (type) {
+            case CLOSED: view = ClosedQuestionView.class; break;
+            case CLOSED_ORDERED: view = OrderedClosedQuestionView.class; break;
+            default: {
+                UIUtils.errorNotification("Тип вопроса не поддерживается", 2);
+                return;
+            }
         }
-    }
 
-    private void openClosedQuestion(int questionId, int disciplineId) {
         getUI().ifPresent(ui -> {
             RouteParam questionParam = new RouteParam("questionId", String.valueOf(questionId));
-            RouteParam disciplineParam = new RouteParam("disciplineId", String.valueOf(disciplineId));
+            RouteParam disciplineParam = new RouteParam("disciplineId", String.valueOf(discipline.getId()));
             RouteParameters parameters = new RouteParameters(questionParam, disciplineParam);
-            ui.navigate(ClosedQuestionView.class, parameters);
+            ui.navigate(view, parameters);
         });
     }
 

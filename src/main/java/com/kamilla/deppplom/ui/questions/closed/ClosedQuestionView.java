@@ -24,7 +24,7 @@ import static com.kamilla.deppplom.ui.utils.UIUtils.errorNotification;
 
 @SpringComponent
 @UIScope
-@Route(value = "questions/:disciplineId/:questionId/closed_question", layout = BaseLayout.class)
+@Route(value = "questions/:disciplineId/:questionId/closed", layout = BaseLayout.class)
 @RolesAllowed({"ADMIN", "TEACHER"})
 public class ClosedQuestionView extends BaseQuestionView<ClosedQuestion> {
 
@@ -59,8 +59,8 @@ public class ClosedQuestionView extends BaseQuestionView<ClosedQuestion> {
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         super.beforeEnter(event);
-
-        question.getOptions().forEach(it -> addOption(it.getId(), it.getTitle(), it.isValid()));
+        question.getOptions()
+                .forEach(it -> addOption(it.getId(), it.getTitle(), it.isValid()));
     }
 
     @Override
