@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ public class UserService {
 
         if (user.getId() == 0) {
             Optional<User> existingUser = repository.findByLogin(user.getLogin());
-            if(existingUser.isPresent()) {
+            if (existingUser.isPresent()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователем с таким логином уже существует");
             }
         }
@@ -64,7 +63,7 @@ public class UserService {
 
         if (groupId != null) {
             stream = stream.filter(user -> user.getGroups().stream()
-                               .anyMatch(group -> group.getId() == groupId));
+                    .anyMatch(group -> group.getId() == groupId));
         }
         if (role != null) {
             stream = stream.filter(user -> user.getRole() == role);
