@@ -49,6 +49,7 @@ public class BaseLayout extends AppLayout {
         Tabs tabs = new Tabs();
         addTab(tabs, VaadinIcon.USERS, "Пользователи", UsersView.class);
         addTab(tabs, VaadinIcon.GROUP, "Группы", GroupsVIew.class);
+//        addTab(tabs, VaadinIcon.AIRPLANE, "Дисциплины", DisciplineView.class);
         addTab(tabs, VaadinIcon.AIRPLANE, "Дисциплины", DisciplineView.class);
         addTab(tabs, VaadinIcon.QUESTION, "Вопросы", QuestionsView.class);
         addTab(tabs, VaadinIcon.FOLDER, "Тесты", TestsView.class);

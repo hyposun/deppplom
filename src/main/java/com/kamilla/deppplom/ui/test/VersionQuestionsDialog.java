@@ -20,7 +20,7 @@ public class VersionQuestionsDialog extends Dialog {
     public VersionQuestionsDialog() {
         add(questionsGrid);
         questionsGrid.setWidthFull();
-        questionsGrid.addColumn(Item::getId).setHeader("ID");
+        questionsGrid.addColumn(Item::getId).setHeader("ID").setAutoWidth(true);
         questionsGrid.addColumn(Item::getTitle).setHeader("Название");
         questionsGrid.addColumn(Item::getDifficulty).setHeader("Сложность");
         questionsGrid.addColumn(Item::getType).setHeader("Тип");

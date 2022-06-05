@@ -5,7 +5,6 @@ import com.kamilla.deppplom.groups.StudentGroupRepository;
 import com.kamilla.deppplom.groups.data.StudentGroupDataService;
 import com.kamilla.deppplom.ui.BaseLayout;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -47,6 +46,7 @@ public class GroupsVIew extends VerticalLayout {
         add(toolbar, grid);
         setupInteractivity();
         showGroups("");
+        setHeightFull();
     }
 
     private void setupInteractivity() {

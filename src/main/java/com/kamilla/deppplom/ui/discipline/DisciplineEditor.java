@@ -43,6 +43,7 @@ public class DisciplineEditor extends Dialog implements KeyNotifier {
         this.service = service;
 
         VerticalLayout layout = new VerticalLayout(title, actions);
+        title.setWidthFull();
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
         add(layout);
         setVisible(false);
@@ -61,7 +62,11 @@ public class DisciplineEditor extends Dialog implements KeyNotifier {
             service.update(discipline);
             onClose.run();
             setVisible(false);
-            successNotification("Дисциплина добавлена", 2);
+            if (discipline.getId() <= 0) {
+                successNotification("Дисциплина добавлена", 2);
+            } else {
+                successNotification("Дисциплина обновлена", 2);
+            }
         } catch (Exception e) {
             var message = e.getMessage();
             if (e instanceof ResponseStatusException) {

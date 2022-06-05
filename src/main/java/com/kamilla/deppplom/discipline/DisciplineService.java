@@ -51,5 +51,7 @@ public class DisciplineService {
         return repository.findByTitleAndParentId(title, parentId);
     }
 
-
+    public void delete(int id) {
+        repository.deleteById(id);
+    }
 }
