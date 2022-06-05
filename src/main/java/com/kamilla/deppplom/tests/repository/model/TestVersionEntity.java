@@ -16,7 +16,10 @@ public class TestVersionEntity {
     @GeneratedValue
     private int id;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<QuestionEntity> questions;
+    @Column
+    private int testId;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Integer> questions;
 
 }

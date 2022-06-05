@@ -18,7 +18,7 @@ public interface DisciplineRepository extends JpaRepository<Discipline, Integer>
 
     List<Discipline> findAllByTitleLike(String title);
 
-    List <Discipline> findAllByParentId(int parentId);
+    List<Discipline> findAllByParentId(int parentId);
 
     Optional <Discipline> findByTitleAndParentId(String title, int parentId);
 

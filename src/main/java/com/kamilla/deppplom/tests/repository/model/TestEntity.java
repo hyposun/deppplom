@@ -24,7 +24,4 @@ public class TestEntity {
     @Column(nullable = false)
     private float minimumPoints;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<TestVersionEntity> versions = new ArrayList<>();
-
 }

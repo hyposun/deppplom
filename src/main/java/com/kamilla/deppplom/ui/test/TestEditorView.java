@@ -38,6 +38,7 @@ public class TestEditorView extends VerticalLayout implements BeforeEnterObserve
     private TestService testService;
     private DisciplineService disciplineService;
     private Test test;
+    private TestVersionsEditor versionsEditor;
 
     private Binder<Test> binder = new Binder<>(Test.class);
 
@@ -52,9 +53,10 @@ public class TestEditorView extends VerticalLayout implements BeforeEnterObserve
     protected Button cancelButton = new Button("Отмена");
     protected HorizontalLayout actions = new HorizontalLayout(saveButton, deleteButton, cancelButton);
 
-    public TestEditorView(TestService testService, DisciplineService disciplineService) {
+    public TestEditorView(TestService testService, DisciplineService disciplineService, TestVersionsEditor versionsEditor) {
         this.testService = testService;
         this.disciplineService = disciplineService;
+        this.versionsEditor = versionsEditor;
 
         formLayout.setColspan(id, 1);
         formLayout.setColspan(discipline, 1);
@@ -76,7 +78,7 @@ public class TestEditorView extends VerticalLayout implements BeforeEnterObserve
         binder.forField(discipline)
                 .bind(Test::getDiscipline, Test::setDiscipline);
 
-        add(formLayout, actions);
+        add(formLayout, versionsEditor, actions);
 
         saveButton.addClickListener(event -> save());
         saveButton.getElement().getThemeList().add("primary");
@@ -101,11 +103,13 @@ public class TestEditorView extends VerticalLayout implements BeforeEnterObserve
 
     private void setupInputsVisibility() {
         if (test.getId() > 0) {
+            versionsEditor.show(test.getId());
             title.setReadOnly(true);
             points.setReadOnly(true);
             deleteButton.setVisible(true);
             saveButton.setVisible(false);
         } else {
+            versionsEditor.setVisible(false);
             title.setReadOnly(false);
             points.setReadOnly(false);
             saveButton.setVisible(true);

@@ -6,6 +6,7 @@ import com.kamilla.deppplom.question.QuestionService;
 import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.Question;
 import com.kamilla.deppplom.question.repository.QuestionEntity;
+import com.kamilla.deppplom.question.repository.QuestionJpaRepository;
 import com.kamilla.deppplom.tests.model.*;
 import com.kamilla.deppplom.tests.repository.TestRepository;
 import com.kamilla.deppplom.tests.repository.TestVersionRepository;
@@ -14,12 +15,12 @@ import com.kamilla.deppplom.tests.repository.model.TestVersionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import javax.transaction.Transactional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.shuffle;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -43,19 +44,6 @@ public class TestService {
                 .collect(toList());
     }
 
-//    public Test update(Test test) {
-//
-//        Discipline discipline = test.getDiscipline();
-//        verifyCollision(test.getTitle(), discipline.getId());
-//        getDiscipline(discipline.getId());
-//
-//        TestEntity entity = new TestEntity();
-//        entity.setId(test.getId());
-//        entity.setTitle(test.getTitle());
-//        entity.setVersions();
-//
-//    }
-
     public Test createTest(CreateTestRequest request) {
 
         verifyCollision(request.getTitle(), request.getDisciplineId());
@@ -70,12 +58,13 @@ public class TestService {
         return fromEntity(entity);
     }
 
+    @Transactional
     public Test createRandomizedVariants(CreateRandomizedTestVariantRequest request) {
 
         var test = getTest(request.getTestId());
         var questions = questionService.findQuestionsByDisciplineId(test.getDisciplineId());
 
-        for (int i = 0; i < request.getReplicas() + 1; i++) {
+        for (int i = 0; i < request.getReplicas(); i++) {
             var ids = getRandomizedQuestions(request, questions);
             manuallyCreateVersion(ids, test);
         }
@@ -86,7 +75,7 @@ public class TestService {
 
     public Test manuallyCreateVersion(ManuallyCreateTestVersionRequest request) {
         var test = getTest(request.getTestId());
-        test = manuallyCreateVersion(request.getQuestionIds(), test);
+        manuallyCreateVersion(request.getQuestionIds(), test);
         return fromEntity(test);
     }
 
@@ -111,14 +100,11 @@ public class TestService {
                 .collect(toList());
     }
 
-    private TestEntity manuallyCreateVersion(List<Integer> questionIds, TestEntity test) {
+    private TestVersionEntity manuallyCreateVersion(List<Integer> questionIds, TestEntity test) {
         var variantEntity = new TestVersionEntity();
-        variantEntity.setQuestions(toEntities(getQuestionsByIds(questionIds)));
-        variantEntity = testVersionRepository.save(variantEntity);
-
-        test.getVersions().add(variantEntity);
-        test = testRepository.save(test);
-        return test;
+        variantEntity.setTestId(test.getId());
+        variantEntity.setQuestions(questionIds);
+        return testVersionRepository.save(variantEntity);
     }
 
     private List<Question> getRandomQuestions(
@@ -151,9 +137,9 @@ public class TestService {
 
     private Test fromEntity(TestEntity test) {
 
-        var versions = test.getVersions().stream()
+        var versions = testVersionRepository.findByTestId(test.getId()).stream()
                 .map(entity -> {
-                    var questions = entity.getQuestions().stream().map(QuestionEntity::getId).collect(toList());
+                    var questions = entity.getQuestions();
                     return new TestVersion(entity.getId(), getQuestionsByIds(questions));
                 })
                 .collect(toList());
@@ -171,14 +157,6 @@ public class TestService {
     private Discipline getDiscipline(int id) {
         return disciplineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Дисциплина не найдена"));
-    }
-
-    private List<QuestionEntity> toEntities(List<Question> questions) {
-        return questions.stream().map(question -> {
-            var questionEntity = new QuestionEntity();
-            questionEntity.setId(question.getId());
-            return questionEntity;
-        }).collect(toList());
     }
 
     private List<Question> getQuestionsByIds(List<Integer> ids) {
