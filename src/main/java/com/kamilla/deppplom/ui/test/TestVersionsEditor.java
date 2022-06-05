@@ -29,17 +29,21 @@ public class TestVersionsEditor extends VerticalLayout {
     private Button generateSelectiveButton = new Button("Создать вручную");
     private Button generateRandomButton = new Button("Создать автоматически");
     private Grid<Version> versionsGrid = new Grid<>();
+    private VersionQuestionsDialog questionsDialog;
 
     public TestVersionsEditor(
             TestService service,
             RandomTestVersionGenerationDialog randomEditDialog,
-            SelectiveTestVersionGenerationDialog selectiveEditDialog
+            SelectiveTestVersionGenerationDialog selectiveEditDialog,
+            VersionQuestionsDialog questionsDialog
     ) {
         this.service = service;
+        this.questionsDialog = questionsDialog;
 
         add(new HorizontalLayout(generateSelectiveButton, generateRandomButton));
         add(new H3("Версии"));
         add(versionsGrid);
+        add(questionsDialog);
 
         versionsGrid.addColumn(Version::getId)
                 .setHeader("ID")
@@ -47,6 +51,12 @@ public class TestVersionsEditor extends VerticalLayout {
         versionsGrid.addColumn(Version::getDescription)
                     .setHeader("Описание")
                     .setAutoWidth(true);
+
+        versionsGrid.asSingleSelect()
+                        .addValueChangeListener(item -> {
+                            if (item.getValue() == null) return;
+                            showVersionQuestions(item.getValue());
+                        });
 
         add(randomEditDialog);
         add(selectiveEditDialog);
@@ -58,6 +68,13 @@ public class TestVersionsEditor extends VerticalLayout {
             selectiveEditDialog.show(test, () -> show(test.getId()));
         });
 
+    }
+
+    private void showVersionQuestions(Version version) {
+        test.getVersions().stream()
+            .filter(it -> it.getId() == version.getId())
+            .findFirst()
+            .ifPresent(questionsDialog::show);
     }
 
     public void show(int testId) {
