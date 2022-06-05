@@ -6,12 +6,17 @@ import com.kamilla.deppplom.tests.TestService;
 import com.kamilla.deppplom.tests.model.ManuallyCreateTestVersionRequest;
 import com.kamilla.deppplom.tests.model.Test;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +35,7 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
     private Test test;
     private Runnable onClose;
 
-    private MultiSelectListBox<Question> questionsListbox = new MultiSelectListBox<>();
-    private Set<Question> selectedQuestions = new HashSet<>();
+    private MultiSelectListBox<QuestionItem> questionsListbox = new MultiSelectListBox<>();
 
     private Button generateButton = new Button("Сохранить", VaadinIcon.CHECK.create());
     private Button cancelButton = new Button("Отмена", VaadinIcon.CHECK.create());
@@ -45,11 +49,7 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
 
         setWidthFull();
         questionsListbox.setWidthFull();
-        questionsListbox.setItemLabelGenerator(Question::getTitle);
-        questionsListbox.addSelectionListener(event -> {
-            selectedQuestions.clear();
-            selectedQuestions.addAll(event.getAllSelectedItems());
-        });
+        questionsListbox.setItemLabelGenerator(QuestionItem::getTitle);
 
         generateButton.getElement().getThemeList().add("primary");
         generateButton.addClickListener(event -> save());
@@ -67,7 +67,11 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
         this.onClose = onClose;
         this.test = test;
 
-        List<Question> questions = questionService.findAllByDisciplineHierarchy(test.getDiscipline().getId());
+        List<QuestionItem> questions = questionService
+                .findAllByDisciplineHierarchy(test.getDiscipline().getId()).stream()
+                .map(it -> new QuestionItem(it.getId(), it.getTitle()))
+                .collect(Collectors.toList());
+
         questionsListbox.setItems(questions);
 
         setVisible(true);
@@ -81,8 +85,8 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
 
     private void save() {
         try {
-            List<Integer> questions = selectedQuestions.stream()
-                    .map(Question::getId)
+            List<Integer> questions = questionsListbox.getValue().stream()
+                    .map(QuestionItem::getId)
                     .collect(Collectors.toList());
 
             ManuallyCreateTestVersionRequest request = new ManuallyCreateTestVersionRequest();
@@ -96,6 +100,13 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
             var message = e.getMessage() == null ? e.toString() : e.getMessage();
             errorNotification(message, 2);
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class QuestionItem {
+        private int id;
+        private String title;
     }
 
 }

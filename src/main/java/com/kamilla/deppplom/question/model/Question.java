@@ -3,17 +3,17 @@ package com.kamilla.deppplom.question.model;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
 import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@Getter
-@Setter
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ClosedQuestion.class),
     @JsonSubTypes.Type(value = OrderedClosedQuestion.class),
 })
+@Data
 public abstract class Question {
 
     protected int id = 0;
