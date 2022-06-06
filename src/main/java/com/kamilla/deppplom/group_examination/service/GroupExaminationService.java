@@ -67,6 +67,13 @@ public class GroupExaminationService {
         return entities.stream().map(this::getGroupModel).collect(Collectors.toList());
     }
 
+    public List<GroupExamination> findAll() {
+        return repository
+                .findAll().stream()
+                .map(this::getGroupModel)
+                .collect(Collectors.toList());
+    }
+
     private StudentGroup getGroup(int groupId) {
        return groupService.findById(groupId).orElseThrow(() -> new IllegalArgumentException("Данная группа не найдена"));
     }

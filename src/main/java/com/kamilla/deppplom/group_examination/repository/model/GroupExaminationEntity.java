@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Table
 @Entity
@@ -20,8 +20,8 @@ public class GroupExaminationEntity {
 
     private int testId;
 
-    private ZonedDateTime openExamTime;
+    private LocalDateTime openExamTime;
 
-    private ZonedDateTime  closeExamTime;
+    private LocalDateTime closeExamTime;
 
 }

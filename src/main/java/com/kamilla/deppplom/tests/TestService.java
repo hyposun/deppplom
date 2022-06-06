@@ -5,8 +5,6 @@ import com.kamilla.deppplom.discipline.repository.DisciplineRepository;
 import com.kamilla.deppplom.question.QuestionService;
 import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.Question;
-import com.kamilla.deppplom.question.repository.QuestionEntity;
-import com.kamilla.deppplom.question.repository.QuestionJpaRepository;
 import com.kamilla.deppplom.tests.model.*;
 import com.kamilla.deppplom.tests.repository.TestRepository;
 import com.kamilla.deppplom.tests.repository.TestVersionRepository;
@@ -16,11 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import static java.util.Collections.shuffle;
-import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -37,6 +36,12 @@ public class TestService {
 
     @Autowired
     private QuestionService questionService;
+
+    public List<Test> findAll() {
+        return testRepository.findAll()
+                .stream().map(this::fromEntity)
+                .collect(toList());
+    }
 
     public List<Test> findAll(int disciplineId) {
         return testRepository.findByDisciplineId(disciplineId)

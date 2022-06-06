@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +19,8 @@ public class GroupExamination {
 
     private StudentGroup group;
 
-    private ZonedDateTime openExamTime;
+    private LocalDateTime openExamTime;
 
-    private ZonedDateTime  closeExamTime;
+    private LocalDateTime closeExamTime;
 
 }

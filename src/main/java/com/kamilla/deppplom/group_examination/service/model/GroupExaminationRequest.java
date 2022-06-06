@@ -3,7 +3,7 @@ package com.kamilla.deppplom.group_examination.service.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -13,9 +13,9 @@ public class GroupExaminationRequest {
 
     private int groupId;
 
-    private ZonedDateTime openExamTime;
+    private LocalDateTime openExamTime;
 
-    private ZonedDateTime  closeExamTime;
+    private LocalDateTime closeExamTime;
 
 
 }

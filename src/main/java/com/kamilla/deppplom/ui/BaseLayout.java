@@ -2,6 +2,7 @@ package com.kamilla.deppplom.ui;
 
 import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.discipline.DisciplineView;
+import com.kamilla.deppplom.ui.examination.GroupExaminationView;
 import com.kamilla.deppplom.ui.groups.GroupsVIew;
 import com.kamilla.deppplom.ui.questions.QuestionsView;
 import com.kamilla.deppplom.ui.test.TestsView;
@@ -49,10 +50,10 @@ public class BaseLayout extends AppLayout {
         Tabs tabs = new Tabs();
         addTab(tabs, VaadinIcon.USERS, "Пользователи", UsersView.class);
         addTab(tabs, VaadinIcon.GROUP, "Группы", GroupsVIew.class);
-//        addTab(tabs, VaadinIcon.AIRPLANE, "Дисциплины", DisciplineView.class);
         addTab(tabs, VaadinIcon.AIRPLANE, "Дисциплины", DisciplineView.class);
         addTab(tabs, VaadinIcon.QUESTION, "Вопросы", QuestionsView.class);
         addTab(tabs, VaadinIcon.FOLDER, "Тесты", TestsView.class);
+        addTab(tabs, VaadinIcon.CHART, "Экзамены", GroupExaminationView.class);
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }
