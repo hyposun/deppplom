@@ -39,7 +39,7 @@ public class ClosedQuestion extends Question {
 
         float result = (float) getCost() / (float) validOptions.size() * (float) selectedValidOptions.size();
 
-        return new CheckResult(result, resultDescription);
+        return new CheckResult(result, getExplanation());
     }
 
     private String getExplanation() {
