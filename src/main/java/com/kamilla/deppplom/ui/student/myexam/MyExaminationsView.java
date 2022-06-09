@@ -19,6 +19,7 @@ import com.vaadin.flow.router.Route;
 import javax.annotation.security.RolesAllowed;
 
 import static com.kamilla.deppplom.ui.utils.UIUtils.formatDate;
+import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.toList;
 
 @PageTitle("Deppplom | Мои экзамены")
@@ -50,7 +51,7 @@ public class MyExaminationsView extends VerticalLayout {
         examinationsGrid
                 .addComponentColumn(this::getStatusBadge)
                 .setTextAlign(ColumnTextAlign.CENTER)
-                .setHeader("Статус").setAutoWidth(true).setSortable(true);
+                .setHeader("Статус").setAutoWidth(true);
 
         examinationsGrid
                 .addColumn(it -> it.getDiscipline().getTitle())
@@ -111,8 +112,9 @@ public class MyExaminationsView extends VerticalLayout {
 
         var items = service.findAllStudentExaminations(user.getId());
         if (showOnlyActual.getValue()) {
+            var now = now();
             items = items.stream()
-                    .filter(it -> it.getStatus().isActive())
+                    .filter(it -> it.getTo().isAfter(now))
                     .collect(toList());
         }
 

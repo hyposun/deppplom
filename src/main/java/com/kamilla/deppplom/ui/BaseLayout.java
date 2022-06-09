@@ -8,16 +8,22 @@ import com.kamilla.deppplom.ui.teacher.discipline.DisciplineView;
 import com.kamilla.deppplom.ui.teacher.examination.GroupExaminationView;
 import com.kamilla.deppplom.ui.teacher.questions.QuestionsView;
 import com.kamilla.deppplom.ui.teacher.test.TestsView;
+import com.kamilla.deppplom.users.User;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 
@@ -44,7 +50,24 @@ public class BaseLayout extends AppLayout {
         Tabs tabs = getTabs();
 
         addToDrawer(tabs);
-        addToNavbar(toggle, title);
+
+        var user = service.getAuthenticatedUser().orElseThrow();
+        Button profile = new Button(user.getName(), e -> onProfileClick(user));
+        profile.addThemeVariants(ButtonVariant.LUMO_SMALL);
+
+        HorizontalLayout header = new HorizontalLayout(toggle, title, profile);
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        header.expand(title);
+        header.setWidth("100%");
+        header.addClassNames("py-0", "px-m");
+        addToNavbar(header);
+    }
+
+    private void onProfileClick(User user) {
+        getUI().ifPresent(ui -> {
+            var params = new RouteParameters("userId", String.valueOf(user.getId()));
+            ui.navigate(UserProfileView.class, params);
+        });
     }
 
     private Tabs getTabs() {
