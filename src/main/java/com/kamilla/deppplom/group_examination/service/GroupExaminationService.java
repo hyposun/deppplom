@@ -8,6 +8,7 @@ import com.kamilla.deppplom.groups.StudentGroup;
 import com.kamilla.deppplom.groups.StudentGroupService;
 import com.kamilla.deppplom.tests.TestService;
 import com.kamilla.deppplom.tests.model.Test;
+import com.kamilla.deppplom.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,10 @@ public class GroupExaminationService {
         groupExaminationEntity.setCloseExamTime(request.getCloseExamTime());
         groupExaminationEntity.setOpenExamTime(request.getOpenExamTime());
 
+        User teacher = new User();
+        teacher.setId(request.getTeacherId());
+        groupExaminationEntity.setTeacher(teacher);
+
         groupExaminationEntity = repository.save(groupExaminationEntity);
 
         return getGroupModel(groupExaminationEntity, group, test);
@@ -54,7 +59,8 @@ public class GroupExaminationService {
             test,
             group,
             entity.getOpenExamTime(),
-            entity.getCloseExamTime()
+            entity.getCloseExamTime(),
+            entity.getTeacher()
         );
     }
 

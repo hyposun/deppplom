@@ -13,6 +13,8 @@ public class GroupExaminationRequest {
 
     private int groupId;
 
+    private int teacherId;
+
     private LocalDateTime openExamTime;
 
     private LocalDateTime closeExamTime;

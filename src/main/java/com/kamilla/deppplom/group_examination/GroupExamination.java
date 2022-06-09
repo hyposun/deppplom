@@ -2,6 +2,7 @@ package com.kamilla.deppplom.group_examination;
 
 import com.kamilla.deppplom.groups.StudentGroup;
 import com.kamilla.deppplom.tests.model.Test;
+import com.kamilla.deppplom.users.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,7 @@ public class GroupExamination {
     private LocalDateTime openExamTime;
 
     private LocalDateTime closeExamTime;
+
+    private User teacher;
 
 }

@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @Data
 public class ClosedQuestion extends Question {
 
@@ -38,6 +40,14 @@ public class ClosedQuestion extends Question {
         float result = (float) getCost() / (float) validOptions.size() * (float) selectedValidOptions.size();
 
         return new CheckResult(result, resultDescription);
+    }
+
+    private String getExplanation() {
+        if (!isBlank(resultDescription)) return resultDescription;
+        return options.stream()
+                .filter(Option::isValid)
+                .map(Option::getTitle)
+                .collect(Collectors.joining(", ", "Правильные ответы: ", ""));
     }
 
     private Set<Integer> getValidOptions() {

@@ -38,7 +38,7 @@ public class ExaminationEntity {
     private int groupExaminationId;
 
     @Column(nullable = false)
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<QuestionExaminationEntity> resultList = new ArrayList<>();
 
     @Column

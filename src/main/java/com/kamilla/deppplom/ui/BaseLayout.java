@@ -1,12 +1,13 @@
 package com.kamilla.deppplom.ui;
 
 import com.kamilla.deppplom.security.SecurityService;
-import com.kamilla.deppplom.ui.discipline.DisciplineView;
-import com.kamilla.deppplom.ui.examination.GroupExaminationView;
-import com.kamilla.deppplom.ui.groups.GroupsVIew;
-import com.kamilla.deppplom.ui.questions.QuestionsView;
-import com.kamilla.deppplom.ui.test.TestsView;
-import com.kamilla.deppplom.ui.users.UsersView;
+import com.kamilla.deppplom.ui.admin.groups.GroupsVIew;
+import com.kamilla.deppplom.ui.admin.users.UsersView;
+import com.kamilla.deppplom.ui.student.myexam.MyExaminationsView;
+import com.kamilla.deppplom.ui.teacher.discipline.DisciplineView;
+import com.kamilla.deppplom.ui.teacher.examination.GroupExaminationView;
+import com.kamilla.deppplom.ui.teacher.questions.QuestionsView;
+import com.kamilla.deppplom.ui.teacher.test.TestsView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -54,6 +55,7 @@ public class BaseLayout extends AppLayout {
         addTab(tabs, VaadinIcon.QUESTION, "Вопросы", QuestionsView.class);
         addTab(tabs, VaadinIcon.FOLDER, "Тесты", TestsView.class);
         addTab(tabs, VaadinIcon.CHART, "Экзамены", GroupExaminationView.class);
+        addTab(tabs, VaadinIcon.CHART, "Мои экзамены", MyExaminationsView.class);
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }

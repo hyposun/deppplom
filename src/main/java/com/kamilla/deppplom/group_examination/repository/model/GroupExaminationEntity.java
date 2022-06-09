@@ -1,11 +1,9 @@
 package com.kamilla.deppplom.group_examination.repository.model;
 
+import com.kamilla.deppplom.users.User;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Table
@@ -23,5 +21,8 @@ public class GroupExaminationEntity {
     private LocalDateTime openExamTime;
 
     private LocalDateTime closeExamTime;
+
+    @ManyToOne
+    private User teacher;
 
 }
