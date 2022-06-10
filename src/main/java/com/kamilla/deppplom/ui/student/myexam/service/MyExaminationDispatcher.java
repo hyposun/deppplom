@@ -4,9 +4,10 @@ import com.kamilla.deppplom.examination.StudentExaminationService;
 import com.kamilla.deppplom.examination.model.StudentExamination;
 import com.kamilla.deppplom.question.model.Question;
 import com.kamilla.deppplom.security.SecurityService;
-import com.kamilla.deppplom.ui.student.myexam.ClosedQuestionInputComponent;
-import com.kamilla.deppplom.ui.student.myexam.OpenedQuestionInputComponent;
 import com.kamilla.deppplom.ui.student.myexam.StatusMyExaminationComponent;
+import com.kamilla.deppplom.ui.student.myexam.questions.ClosedQuestionInputComponent;
+import com.kamilla.deppplom.ui.student.myexam.questions.OpenedQuestionInputComponent;
+import com.kamilla.deppplom.ui.student.myexam.questions.OrderedClosedQuestionInputComponent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
@@ -57,7 +58,7 @@ public class MyExaminationDispatcher {
         switch (question.getType()) {
             case OPENED: component = OpenedQuestionInputComponent.class; break;
             case CLOSED: component = ClosedQuestionInputComponent.class; break;
-            case CLOSED_ORDERED:
+            case CLOSED_ORDERED: component = OrderedClosedQuestionInputComponent.class; break;
             default:
                 throw new IllegalStateException("Неизвестный тип вопрос: " + question.getType());
         }

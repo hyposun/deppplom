@@ -1,4 +1,4 @@
-package com.kamilla.deppplom.ui.student.myexam;
+package com.kamilla.deppplom.ui.student.myexam.questions;
 
 import com.kamilla.deppplom.examination.StudentExaminationService;
 import com.kamilla.deppplom.question.QuestionService;
@@ -44,3 +44,4 @@ public class OpenedQuestionInputComponent extends BaseQuestionInputComponent<Ope
         return selection;
     }
 }
+
