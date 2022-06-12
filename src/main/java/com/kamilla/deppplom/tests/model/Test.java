@@ -14,4 +14,7 @@ public class Test {
     private float minimumPoints;
     private List<TestVersion> versions;
     private Discipline discipline;
+    private int lowQuestions;
+    private int mediumQuestion;
+    private int highQuestions;
 }

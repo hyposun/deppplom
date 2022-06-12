@@ -4,7 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 
 @Data
 public class CreateTestRequest {
@@ -17,5 +17,14 @@ public class CreateTestRequest {
 
     @Positive
     private float minimumPoints;
+
+    @PositiveOrZero
+    private int lowQuestions;
+
+    @PositiveOrZero
+    private int mediumQuestion;
+
+    @PositiveOrZero
+    private int highQuestions;
 
 }

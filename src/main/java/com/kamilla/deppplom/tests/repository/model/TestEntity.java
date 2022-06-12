@@ -3,8 +3,6 @@ package com.kamilla.deppplom.tests.repository.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Table
 @Entity
@@ -23,5 +21,14 @@ public class TestEntity {
 
     @Column(nullable = false)
     private float minimumPoints;
+
+    @Column(nullable = false)
+    private int lowQuestions;
+
+    @Column(nullable = false)
+    private int mediumQuestion;
+
+    @Column(nullable = false)
+    private int highQuestions;
 
 }

@@ -1,4 +1,4 @@
-package com.kamilla.deppplom.ui.teacher;
+package com.kamilla.deppplom.ui.teacher.students;
 
 import com.kamilla.deppplom.groups.StudentGroup;
 import com.kamilla.deppplom.security.SecurityService;
@@ -52,7 +52,6 @@ public class StudentsView extends VerticalLayout {
                 .addColumn(User::getId)
                 .setHeader("ID")
                 .setAutoWidth(true);
-
         studentsGrid
                 .addColumn(User::getName)
                 .setHeader("Имя")

@@ -2,7 +2,6 @@ package com.kamilla.deppplom.ui.teacher.test;
 
 import com.kamilla.deppplom.question.QuestionService;
 import com.kamilla.deppplom.tests.TestService;
-import com.kamilla.deppplom.tests.model.ManuallyCreateTestVersionRequest;
 import com.kamilla.deppplom.tests.model.Test;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -82,10 +81,7 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
                     .map(QuestionItem::getId)
                     .collect(Collectors.toList());
 
-            ManuallyCreateTestVersionRequest request = new ManuallyCreateTestVersionRequest();
-            request.setTestId(test.getId());
-            request.setQuestionIds(questions);
-            testService.manuallyCreateVersion(request);
+            testService.manuallyCreateVersion(test.getId(), questions);
             successNotification("Готово", 1);
             onClose.run();
             close();

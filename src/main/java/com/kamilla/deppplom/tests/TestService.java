@@ -5,7 +5,9 @@ import com.kamilla.deppplom.discipline.repository.DisciplineRepository;
 import com.kamilla.deppplom.question.QuestionService;
 import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.question.model.Question;
-import com.kamilla.deppplom.tests.model.*;
+import com.kamilla.deppplom.tests.model.CreateTestRequest;
+import com.kamilla.deppplom.tests.model.Test;
+import com.kamilla.deppplom.tests.model.TestVersion;
 import com.kamilla.deppplom.tests.repository.TestRepository;
 import com.kamilla.deppplom.tests.repository.TestVersionRepository;
 import com.kamilla.deppplom.tests.repository.model.TestEntity;
@@ -58,19 +60,22 @@ public class TestService {
         entity.setDisciplineId(request.getDisciplineId());
         entity.setTitle(request.getTitle());
         entity.setMinimumPoints(request.getMinimumPoints());
+        entity.setLowQuestions(request.getLowQuestions());
+        entity.setMediumQuestion(request.getMediumQuestion());
+        entity.setHighQuestions(request.getHighQuestions());
         entity = testRepository.save(entity);
 
         return fromEntity(entity);
     }
 
     @Transactional
-    public Test createRandomizedVariants(CreateRandomizedTestVariantRequest request) {
+    public Test createRandomizedVariants(int testId, int replicas) {
 
-        var test = getTest(request.getTestId());
+        var test = getTest(testId);
         var questions = questionService.findQuestionsByDisciplineId(test.getDisciplineId());
 
-        for (int i = 0; i < request.getReplicas(); i++) {
-            var ids = getRandomizedQuestions(request, questions);
+        for (int i = 0; i < replicas; i++) {
+            var ids = getRandomizedQuestions(test, questions);
             manuallyCreateVersion(ids, test);
         }
 
@@ -78,9 +83,9 @@ public class TestService {
         return fromEntity(test);
     }
 
-    public Test manuallyCreateVersion(ManuallyCreateTestVersionRequest request) {
-        var test = getTest(request.getTestId());
-        manuallyCreateVersion(request.getQuestionIds(), test);
+    public Test manuallyCreateVersion(int testId, List<Integer> questionIds) {
+        var test = getTest(testId);
+        manuallyCreateVersion(questionIds, test);
         return fromEntity(test);
     }
 
@@ -88,11 +93,11 @@ public class TestService {
         return testRepository.findById(testId).map(this::fromEntity);
     }
 
-    private List<Integer> getRandomizedQuestions(CreateRandomizedTestVariantRequest request, List<Question> questions) {
+    private List<Integer> getRandomizedQuestions(TestEntity test, List<Question> questions) {
 
-        var lowTests = getRandomQuestions(request.getLowQuestions(), Difficulty.LOW, questions);
-        var mediumTests = getRandomQuestions(request.getMediumQuestion(), Difficulty.MEDIUM, questions);
-        var highTests = getRandomQuestions(request.getHighQuestions(), Difficulty.HIGH, questions);
+        var lowTests = getRandomQuestions(test.getLowQuestions(), Difficulty.LOW, questions);
+        var mediumTests = getRandomQuestions(test.getMediumQuestion(), Difficulty.MEDIUM, questions);
+        var highTests = getRandomQuestions(test.getHighQuestions(), Difficulty.HIGH, questions);
 
         List<Question> result = new ArrayList<>();
         result.addAll(lowTests);
@@ -150,11 +155,14 @@ public class TestService {
                 .collect(toList());
 
         return new Test(
-                test.getId(),
-                test.getTitle(),
-                test.getMinimumPoints(),
-                versions,
-                getDiscipline(test.getDisciplineId())
+            test.getId(),
+            test.getTitle(),
+            test.getMinimumPoints(),
+            versions,
+            getDiscipline(test.getDisciplineId()),
+            test.getLowQuestions(),
+            test.getMediumQuestion(),
+            test.getHighQuestions()
         );
     }
 
