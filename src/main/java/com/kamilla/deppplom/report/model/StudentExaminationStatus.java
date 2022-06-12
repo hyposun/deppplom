@@ -1,6 +1,6 @@
-package com.kamilla.deppplom.ui.student.myexam.service;
+package com.kamilla.deppplom.report.model;
 
-public enum ExaminationStatus {
+public enum StudentExaminationStatus {
 
     PLANNED("Запланировано", true),
     NOT_STARTED("Ожидает прохождения", true),
@@ -11,7 +11,7 @@ public enum ExaminationStatus {
     private String title;
     private boolean active;
 
-    ExaminationStatus(String title, boolean active) {
+    StudentExaminationStatus(String title, boolean active) {
         this.title = title;
         this.active = active;
     }

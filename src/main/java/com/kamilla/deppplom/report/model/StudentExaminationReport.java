@@ -1,4 +1,4 @@
-package com.kamilla.deppplom.ui.student.myexam.service;
+package com.kamilla.deppplom.report.model;
 
 import com.kamilla.deppplom.discipline.Discipline;
 import com.kamilla.deppplom.examination.model.StudentExamination;
@@ -25,7 +25,7 @@ public class StudentExaminationReport {
 
     Test test;
 
-    ExaminationStatus status;
+    StudentExaminationStatus status;
 
     LocalDateTime from;
 

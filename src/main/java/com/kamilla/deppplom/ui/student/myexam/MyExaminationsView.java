@@ -1,10 +1,10 @@
 package com.kamilla.deppplom.ui.student.myexam;
 
+import com.kamilla.deppplom.report.ExaminationReportService;
+import com.kamilla.deppplom.report.model.StudentExaminationReport;
 import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.BaseLayout;
-import com.kamilla.deppplom.ui.student.myexam.service.ExaminationReportService;
 import com.kamilla.deppplom.ui.student.myexam.service.MyExaminationDispatcher;
-import com.kamilla.deppplom.ui.student.myexam.service.StudentExaminationReport;
 import com.kamilla.deppplom.users.User;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -49,7 +49,7 @@ public class MyExaminationsView extends VerticalLayout {
     private void setupGrid() {
 
         examinationsGrid
-                .addComponentColumn(this::getStatusBadge)
+                .addComponentColumn(MyExaminationsView::getStatusBadge)
                 .setTextAlign(ColumnTextAlign.CENTER)
                 .setHeader("Статус").setAutoWidth(true);
 
@@ -90,7 +90,7 @@ public class MyExaminationsView extends VerticalLayout {
     }
 
 
-    private Component getStatusBadge(StudentExaminationReport report) {
+    public static Component getStatusBadge(StudentExaminationReport report) {
         var status = report.getStatus();
         Span badge = new Span(status.getTitle());
 

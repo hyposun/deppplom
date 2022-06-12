@@ -3,6 +3,8 @@ package com.kamilla.deppplom.ui.student.myexam.service;
 import com.kamilla.deppplom.examination.StudentExaminationService;
 import com.kamilla.deppplom.examination.model.StudentExamination;
 import com.kamilla.deppplom.question.model.Question;
+import com.kamilla.deppplom.report.ExaminationReportService;
+import com.kamilla.deppplom.report.model.StudentExaminationStatus;
 import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.student.myexam.StatusMyExaminationComponent;
 import com.kamilla.deppplom.ui.student.myexam.questions.ClosedQuestionInputComponent;
@@ -36,7 +38,7 @@ public class MyExaminationDispatcher {
         var report = reportService.getStudentExamination(user.getId(), groupExaminationId);
         var status = report.getStatus();
 
-        if (status == ExaminationStatus.PLANNED) return;
+        if (status == StudentExaminationStatus.PLANNED) return;
 
         if (status.isActive()) {
             var studentExamination = Optional.ofNullable(report.getStudentExamination())

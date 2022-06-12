@@ -2,10 +2,10 @@ package com.kamilla.deppplom.ui.student.myexam;
 
 import com.kamilla.deppplom.examination.model.QuestionExamination;
 import com.kamilla.deppplom.examination.model.StudentExamination;
+import com.kamilla.deppplom.report.ExaminationReportService;
+import com.kamilla.deppplom.report.model.StudentExaminationReport;
 import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.BaseLayout;
-import com.kamilla.deppplom.ui.student.myexam.service.ExaminationReportService;
-import com.kamilla.deppplom.ui.student.myexam.service.StudentExaminationReport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;

@@ -1,8 +1,8 @@
 package com.kamilla.deppplom.ui.student.myexam;
 
+import com.kamilla.deppplom.report.ExaminationReportService;
+import com.kamilla.deppplom.report.model.StudentExaminationReport;
 import com.kamilla.deppplom.security.SecurityService;
-import com.kamilla.deppplom.ui.student.myexam.service.ExaminationReportService;
-import com.kamilla.deppplom.ui.student.myexam.service.StudentExaminationReport;
 import com.kamilla.deppplom.users.User;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

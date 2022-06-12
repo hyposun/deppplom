@@ -62,7 +62,7 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
 
         List<QuestionItem> questions = questionService
                 .findAllByDisciplineHierarchy(test.getDiscipline().getId()).stream()
-                .map(it -> new QuestionItem(it.getId(), it.getTitle()))
+                .map(it -> new QuestionItem(it.getId(), it.getTitle() + " [" + it.getDifficulty().getTitle() + "]"))
                 .collect(Collectors.toList());
 
         questionsListbox.setItems(questions);
