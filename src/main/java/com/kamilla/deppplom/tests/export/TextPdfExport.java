@@ -7,24 +7,26 @@ import com.kamilla.deppplom.question.impl.openquestion.OpenQuestion;
 import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
 import com.kamilla.deppplom.question.model.Question;
 import com.kamilla.deppplom.tests.model.TestVersion;
+import org.springframework.stereotype.Component;
 
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 
+@Component
 public class TextPdfExport {
 
     private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
     private static Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
 
-    private void getPdfDocument(String path, TestVersion version) {
+    public void getPdfDocument(ByteArrayOutputStream byteArrayOutputStream, TestVersion version) {
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(path));
+            PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
             addPage(document,version);
             document.close();
         }
         catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
 
     }
@@ -65,14 +67,17 @@ public class TextPdfExport {
                 var openQuestion = (OpenQuestion)question;
                 Phrase phrase = new Phrase("\n");
                 document.add(phrase);
+                break;
             }
             case CLOSED: {
                 var closedQuestion = (ClosedQuestion)question;
                 getClosedQuestionAnswer(closedQuestion, document);
+                break;
             }
             case CLOSED_ORDERED: {
                 var orderedClosedQuestion = (OrderedClosedQuestion)question;
                 getOrderedClosedQuestionAnswer(orderedClosedQuestion, document);
+                break;
             }
         }
     }
