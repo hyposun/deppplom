@@ -28,7 +28,7 @@ public class ClosedQuestion extends Question {
     }
 
     @Override
-    public CheckResult check(Object selection) {
+    public CheckResult check(Object selection){
 
         var actualSelection = (ClosedQuestionSelection) selection;
         var validOptions = getValidOptions();
@@ -37,7 +37,18 @@ public class ClosedQuestion extends Question {
                 .filter(validOptions::contains)
                 .collect(Collectors.toSet());
 
-        float result = (float) getCost() / (float) validOptions.size() * (float) selectedValidOptions.size();
+
+        var wrongOptions = actualSelection.getSelectedOptions()
+                .stream()
+                .filter(item -> !validOptions.contains(item))
+                .collect(Collectors.toSet());
+
+        float falsePoints = 0.0F;
+        if (!options.isEmpty() && options.size() == selectedValidOptions.size()) {
+            return new CheckResult(falsePoints, getExplanation());
+        }
+
+        var result = (float)selectedValidOptions.size() / ((float) validOptions.size() + (float) wrongOptions.size());
 
         return new CheckResult(result, getExplanation());
     }
@@ -51,7 +62,11 @@ public class ClosedQuestion extends Question {
     }
 
     private Set<Integer> getValidOptions() {
-        return options.stream().map(Option::getId).collect(Collectors.toSet());
+        return options.stream()
+                .filter(Option::isValid)
+                 .map(Option::getId)
+                .collect(Collectors.toSet());
+        //return options.stream().map(Option::getId).collect(Collectors.toSet());
     }
 
     @Getter
