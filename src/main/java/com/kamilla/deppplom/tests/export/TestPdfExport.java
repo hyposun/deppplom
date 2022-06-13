@@ -17,8 +17,7 @@ public class TestPdfExport {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(path));
             document.open();
-            addPage(document);
-            addContent(version);
+            addPage(document,version);
             document.close();
         }
         catch (Exception e){
@@ -27,7 +26,7 @@ public class TestPdfExport {
 
     }
 
-    private void addPage(Document document) throws DocumentException {
+    private void addPage(Document document,TestVersion version) throws DocumentException {
 
         Paragraph paragraph = new Paragraph();
         addEmptyLine(paragraph,1);
@@ -35,6 +34,7 @@ public class TestPdfExport {
         addEmptyLine(paragraph,1);
         paragraph.add(new Paragraph("Вопросы: ", subFont));
         addEmptyLine(paragraph, 3);
+        addContent(version);
 
         document.add(paragraph);
 

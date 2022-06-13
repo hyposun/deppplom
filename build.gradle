@@ -36,6 +36,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+    implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.0.6'
 }
 
 tasks.named('test') {
