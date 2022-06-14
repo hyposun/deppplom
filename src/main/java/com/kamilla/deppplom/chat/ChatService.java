@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+
 @Service
 public class ChatService {
 
@@ -28,9 +30,21 @@ public class ChatService {
     @Autowired
     private UserService userService;
 
+    public Chat findOrCreateChatBetween(int firstUserId, int secondUserId) {
+        return findChatBetween(firstUserId, secondUserId)
+                .orElseGet(() -> {
+                    User first = userService.findById(firstUserId).orElseThrow();
+                    User second = userService.findById(secondUserId).orElseThrow();
+                    var participants = List.of(first, second);
+                    return new Chat(0, participants, emptyList(), false);
+                });
+    }
+
     public Optional<Chat> findChatBetween(int firstUserId, int secondUserId) {
         return chatRepository
-                .findAllByUserIdsIn(List.of(firstUserId, secondUserId))
+                .findAllByUserIdsContains(firstUserId).stream()
+                .filter(it -> it.getUserIds().contains(secondUserId))
+                .findFirst()
                 .map(this::fromEntity);
     }
 
@@ -41,7 +55,7 @@ public class ChatService {
     }
 
     public ChatMessage sendMessage(int fromUserId, int toUserId, String message) {
-        var chat = findOrCreateChat(fromUserId, toUserId);
+        var chat = findOrCreateEntityChatBetween(fromUserId, toUserId);
 
         ChatMessageEntity chatMessage = new ChatMessageEntity();
         chatMessage.setChatId(chat.getId());
@@ -65,9 +79,11 @@ public class ChatService {
                 });
     }
 
-    private ChatEntity findOrCreateChat(int fromUserId, int toUserId) {
+    private ChatEntity findOrCreateEntityChatBetween(int fromUserId, int toUserId) {
         var participants = List.of(fromUserId, toUserId);
-        return chatRepository.findAllByUserIdsIn(participants)
+        return chatRepository.findAllByUserIdsContains(fromUserId).stream()
+                .filter(it -> it.getUserIds().contains(toUserId))
+                .findFirst()
                 .orElseGet(() -> chatRepository.save(new ChatEntity(0, participants)));
     }
 

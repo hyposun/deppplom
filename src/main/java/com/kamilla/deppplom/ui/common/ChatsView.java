@@ -7,12 +7,14 @@ import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.BaseLayout;
 import com.kamilla.deppplom.ui.utils.UIUtils;
 import com.kamilla.deppplom.users.User;
+import com.kamilla.deppplom.users.UserService;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Comparator;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @RolesAllowed({"ADMIN", "STUDENT", "TEACHER"})
 public class ChatsView extends VerticalLayout implements BeforeEnterObserver {
 
+    private UserService userService;
     private SecurityService securityService;
     private ChatService chatService;
 
@@ -33,37 +36,26 @@ public class ChatsView extends VerticalLayout implements BeforeEnterObserver {
     private TextField nameFilter = new TextField("Имя");
     private Grid<Chat> chatGrid = new Grid<>();
 
-    public ChatsView(SecurityService securityService, ChatService chatService) {
+    public ChatsView(UserService userService, SecurityService securityService, ChatService chatService) {
+        this.userService = userService;
         this.securityService = securityService;
         this.chatService = chatService;
 
         chatGrid.setWidthFull();
 
-        chatGrid.addComponentColumn(chat -> {
-            Span badge = new Span();
-            if (chat.isUpdaterFor(user.getId())) {
-                badge.setText("Новое сообщение");
-                badge.getElement().getThemeList().add("badge success");
-            } else {
-                badge.setText("Прочитано");
-                badge.getElement().getThemeList().add("badge");
-            }
-            return badge;
-        }).setHeader("Статус").setAutoWidth(true);
+        chatGrid.addComponentColumn(this::getStatusBadge)
+                .setHeader("Статус")
+                .setAutoWidth(true);
 
         chatGrid.addColumn(chat -> getUserTitle(chat.getOppositeUser(user.getId())))
                 .setHeader("Пользователь")
                 .setAutoWidth(true);
 
-        chatGrid.addColumn(chat -> {
-                    return getLastMessage(chat).map(it -> UIUtils.formatDate(it.getTime())).orElse("");
-                })
+        chatGrid.addColumn(chat -> getLastMessage(chat).map(it -> UIUtils.formatDate(it.getTime())).orElse(""))
                 .setHeader("Время")
                 .setAutoWidth(true);
 
-        chatGrid.addColumn(chat -> {
-                    return getLastMessage(chat).map(ChatMessage::getMessage).orElse("");
-                })
+        chatGrid.addColumn(chat -> getLastMessage(chat).map(ChatMessage::getMessage).orElse(""))
                 .setHeader("Последнее сообщение")
                 .setAutoWidth(true);
 
@@ -84,6 +76,15 @@ public class ChatsView extends VerticalLayout implements BeforeEnterObserver {
         add(new HorizontalLayout(nameFilter), chatGrid);
     }
 
+    private Span getStatusBadge(Chat chat) {
+        Span badge = new Span();
+        if (chat.isUpdaterFor(user.getId())) {
+            badge.setText("Новое сообщение");
+            badge.getElement().getThemeList().add("badge success");
+        }
+        return badge;
+    }
+
     private Optional<ChatMessage> getLastMessage(Chat chat) {
         return chat.getMessages()
                 .stream().max(Comparator.comparing(ChatMessage::getTime));
@@ -96,20 +97,21 @@ public class ChatsView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     private void refresh() {
-        List<Chat> chats = chatService.findAllChats(user.getId());
+        List<Chat> chats;
         String nameFilterValue = nameFilter.getValue();
         if (nameFilterValue != null && !nameFilterValue.isBlank()) {
-            chats = chats.stream()
-                    .filter(it -> {
-                        return it.getOppositeUser(user.getId())
-                                .getName().toLowerCase().contains(nameFilterValue.toLowerCase());
-                    })
+            chats = userService
+                    .findAllByNameLike(nameFilterValue).stream()
+                    .filter(it -> CollectionUtils.containsAny(user.getGroups(), it.getGroups()))
+                    .map(it -> chatService.findOrCreateChatBetween(user.getId(), it.getId()))
                     .collect(Collectors.toList());
+        } else {
+            chats = chatService.findAllChats(user.getId());
         }
         chatGrid.setItems(chats);
     }
 
-    public static final String getUserTitle(User user) {
+    public static String getUserTitle(User user) {
         return user.getName() + " [" + user.getRole().getTitle() + "]";
     }
 
