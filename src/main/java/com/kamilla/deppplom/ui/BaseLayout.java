@@ -3,6 +3,7 @@ package com.kamilla.deppplom.ui;
 import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.admin.groups.GroupsVIew;
 import com.kamilla.deppplom.ui.admin.users.UsersView;
+import com.kamilla.deppplom.ui.common.ChatsView;
 import com.kamilla.deppplom.ui.student.myexam.MyExaminationsView;
 import com.kamilla.deppplom.ui.teacher.discipline.DisciplineView;
 import com.kamilla.deppplom.ui.teacher.examination.GroupExaminationView;
@@ -84,6 +85,7 @@ public class BaseLayout extends AppLayout {
         addTab(tabs, VaadinIcon.FOLDER, "Тесты", TestsView.class);
         addTab(tabs, VaadinIcon.CHART, "Экзамены", GroupExaminationView.class);
         addTab(tabs, VaadinIcon.USER_CLOCK, "Студенты", StudentsView.class);
+        addTab(tabs, VaadinIcon.LAPTOP, "Сообщения", ChatsView.class);
 
         // students
         addTab(tabs, VaadinIcon.CHART, "Мои экзамены", MyExaminationsView.class);

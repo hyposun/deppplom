@@ -2,6 +2,7 @@ package com.kamilla.deppplom.ui.teacher.test;
 
 import com.kamilla.deppplom.question.model.Question;
 import com.kamilla.deppplom.tests.TestService;
+import com.kamilla.deppplom.tests.export.TextPdfExportService;
 import com.kamilla.deppplom.tests.model.Test;
 import com.kamilla.deppplom.tests.model.TestVersion;
 import com.vaadin.flow.component.button.Button;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
+import lombok.SneakyThrows;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import static java.util.stream.Collectors.joining;
 @SpringComponent
 public class TestVersionsEditor extends VerticalLayout {
 
+    private TextPdfExportService textPdfExportService;
     private TestService service;
     private Test test;
 
@@ -35,9 +38,11 @@ public class TestVersionsEditor extends VerticalLayout {
             TestService service,
             RandomTestVersionGenerationDialog randomEditDialog,
             SelectiveTestVersionGenerationDialog selectiveEditDialog,
+            TextPdfExportService textPdfExportService,
             VersionQuestionsDialog questionsDialog
     ) {
         this.service = service;
+        this.textPdfExportService = textPdfExportService;
         this.questionsDialog = questionsDialog;
 
         add(new HorizontalLayout(generateSelectiveButton, generateRandomButton));
@@ -45,12 +50,20 @@ public class TestVersionsEditor extends VerticalLayout {
         add(versionsGrid);
         add(questionsDialog);
 
-        versionsGrid.addColumn(Version::getId)
+        versionsGrid
+                .addColumn(Version::getId)
                 .setHeader("ID")
                 .setAutoWidth(true);
-        versionsGrid.addColumn(Version::getDescription)
-                    .setHeader("Описание")
-                    .setAutoWidth(true);
+
+        versionsGrid
+                .addColumn(Version::getDescription)
+                .setHeader("Описание")
+                .setAutoWidth(true);
+
+        versionsGrid
+                .addComponentColumn(this::getDownloadVersionPdfLink)
+                .setHeader("PDF")
+                .setAutoWidth(true);
 
         versionsGrid.asSingleSelect()
                         .addValueChangeListener(item -> {
@@ -68,6 +81,14 @@ public class TestVersionsEditor extends VerticalLayout {
             selectiveEditDialog.show(test, () -> show(test.getId()));
         });
 
+    }
+
+    @SneakyThrows
+    private DownloadVersionPdfLink getDownloadVersionPdfLink(Version it) {
+        var testVersion = test.getVersions().stream()
+                .filter(version -> version.getId() == it.id)
+                .findAny().orElseThrow();
+        return new DownloadVersionPdfLink(textPdfExportService, test, testVersion);
     }
 
     private void showVersionQuestions(Version version) {
