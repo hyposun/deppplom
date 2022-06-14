@@ -11,6 +11,7 @@ import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageInputI18n;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -59,7 +60,10 @@ public class ChatView extends VerticalLayout implements BeforeEnterObserver {
                 .setMessage("Введите сообщение")
                 .setSend("Отправить"));
 
-        add(header, messageList, messageInput);
+        Scroller scroller = new Scroller(messageList, Scroller.ScrollDirection.VERTICAL);
+        scroller.setWidthFull();
+        scroller.setHeightFull();
+        add(header, scroller, messageInput);
 
         messageInput.addSubmitListener(event -> {
             String message = event.getValue();

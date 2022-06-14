@@ -6,6 +6,7 @@ import com.kamilla.deppplom.chat.model.ChatMessage;
 import com.kamilla.deppplom.security.SecurityService;
 import com.kamilla.deppplom.ui.BaseLayout;
 import com.kamilla.deppplom.ui.utils.UIUtils;
+import com.kamilla.deppplom.users.Role;
 import com.kamilla.deppplom.users.User;
 import com.kamilla.deppplom.users.UserService;
 import com.vaadin.flow.component.grid.Grid;
@@ -33,7 +34,7 @@ public class ChatsView extends VerticalLayout implements BeforeEnterObserver {
 
     private User user;
 
-    private TextField nameFilter = new TextField("Имя");
+    private TextField nameFilter = new TextField("Поиск по имени");
     private Grid<Chat> chatGrid = new Grid<>();
 
     public ChatsView(UserService userService, SecurityService securityService, ChatService chatService) {
@@ -100,9 +101,13 @@ public class ChatsView extends VerticalLayout implements BeforeEnterObserver {
         List<Chat> chats;
         String nameFilterValue = nameFilter.getValue();
         if (nameFilterValue != null && !nameFilterValue.isBlank()) {
-            chats = userService
-                    .findAllByNameLike(nameFilterValue).stream()
-                    .filter(it -> CollectionUtils.containsAny(user.getGroups(), it.getGroups()))
+            var chatsStream = userService
+                    .findAllByNameLike(nameFilterValue).stream();
+            if (user.getRole() != Role.ADMIN) {
+                chatsStream = chatsStream
+                        .filter(it -> CollectionUtils.containsAny(user.getGroups(), it.getGroups()));
+            }
+            chats = chatsStream
                     .map(it -> chatService.findOrCreateChatBetween(user.getId(), it.getId()))
                     .collect(Collectors.toList());
         } else {
