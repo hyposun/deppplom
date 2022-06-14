@@ -2,17 +2,18 @@ package com.kamilla.deppplom.users;
 
 import com.kamilla.deppplom.groups.StudentGroup;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table
 @Data
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -40,5 +41,8 @@ public class User {
     @Column(nullable = false)
     private boolean disabled = false;
 
+    public User(int id) {
+        this.id = id;
+    }
 }
 
