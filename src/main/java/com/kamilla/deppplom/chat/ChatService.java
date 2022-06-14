@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-
 @Service
 public class ChatService {
 
@@ -32,14 +30,12 @@ public class ChatService {
 
     public Optional<Chat> findChatBetween(int firstUserId, int secondUserId) {
         return chatRepository
-                .findAllByUserIds(asList(new User(firstUserId), new User(secondUserId)))
+                .findAllByUserIdsIn(List.of(firstUserId, secondUserId))
                 .map(this::fromEntity);
     }
 
     public List<Chat> findAllChats(int userId) {
-        User user = new User();
-        user.setId(userId);
-        return chatRepository.findAllByUserIds(user).stream()
+        return chatRepository.findAllByUserIdsContains(userId).stream()
                 .map(this::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -58,11 +54,11 @@ public class ChatService {
         return fromEntity(chatMessage);
     }
 
-    public void markMessagesDelivered(long chatId) {
+    public void markMessagesDelivered(long chatId, int userId) {
         var chat = chatRepository.findById(chatId).orElseThrow();
         chatMessageRepository
                 .findAllByChatId(chat.getId()).stream()
-                .filter(it -> !it.isDelivered())
+                .filter(it -> !it.isDelivered() && it.getUserId() != userId)
                 .forEach(message -> {
                     message.setDelivered(true);
                     chatMessageRepository.save(message);
@@ -70,17 +66,21 @@ public class ChatService {
     }
 
     private ChatEntity findOrCreateChat(int fromUserId, int toUserId) {
-        var participants = asList(new User(fromUserId), new User(toUserId));
-        return chatRepository.findAllByUserIds(participants)
+        var participants = List.of(fromUserId, toUserId);
+        return chatRepository.findAllByUserIdsIn(participants)
                 .orElseGet(() -> chatRepository.save(new ChatEntity(0, participants)));
     }
 
     private Chat fromEntity(ChatEntity chat) {
-        List<ChatMessage> messages = chatMessageRepository.findAllByChatId(chat.getId()).stream()
+        List<ChatMessage> messages = chatMessageRepository
+                .findAllByChatId(chat.getId()).stream()
                 .map(this::fromEntity)
                 .collect(Collectors.toList());
         boolean updated = messages.stream().anyMatch(message -> !message.isDelivered());
-        return new Chat(chat.getId(), chat.getUserIds(), messages, updated);
+        List<User> participants = chat.getUserIds().stream()
+                .map(it -> userService.findById(it).orElseThrow())
+                .collect(Collectors.toList());
+        return new Chat(chat.getId(), participants, messages, updated);
     }
 
     private ChatMessage fromEntity(ChatMessageEntity message) {
