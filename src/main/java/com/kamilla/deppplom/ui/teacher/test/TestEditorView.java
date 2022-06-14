@@ -143,6 +143,7 @@ public class TestEditorView extends VerticalLayout implements BeforeEnterObserve
             versionsEditor.setVisible(false);
             title.setReadOnly(false);
             points.setReadOnly(false);
+            lowQuestions.setReadOnly(false);
             mediumQuestion.setReadOnly(false);
             highQuestions.setReadOnly(false);
             deleteButton.setVisible(false);

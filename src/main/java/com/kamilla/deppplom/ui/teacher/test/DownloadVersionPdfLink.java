@@ -1,6 +1,6 @@
 package com.kamilla.deppplom.ui.teacher.test;
 
-import com.kamilla.deppplom.tests.export.TextPdfExport;
+import com.kamilla.deppplom.tests.export.TextPdfExportService;
 import com.kamilla.deppplom.tests.model.Test;
 import com.kamilla.deppplom.tests.model.TestVersion;
 import com.vaadin.flow.component.html.Anchor;
@@ -15,12 +15,12 @@ public class DownloadVersionPdfLink extends Anchor {
 
     private byte[] content;
 
-    public DownloadVersionPdfLink(TextPdfExport textPdfExport, Test test, TestVersion testVersion) {
+    public DownloadVersionPdfLink(TextPdfExportService textPdfExportService, Test test, TestVersion testVersion) {
 
         String fileName = test.getTitle().replace(" ", "_") + "_version-" + testVersion.getId() + ".pdf";
 
         try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            textPdfExport.getPdfDocument(outputStream, testVersion);
+            textPdfExportService.getPdfDocument(outputStream, test, testVersion);
             content = outputStream.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);

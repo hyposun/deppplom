@@ -2,7 +2,7 @@ package com.kamilla.deppplom.ui.teacher.test;
 
 import com.kamilla.deppplom.question.model.Question;
 import com.kamilla.deppplom.tests.TestService;
-import com.kamilla.deppplom.tests.export.TextPdfExport;
+import com.kamilla.deppplom.tests.export.TextPdfExportService;
 import com.kamilla.deppplom.tests.model.Test;
 import com.kamilla.deppplom.tests.model.TestVersion;
 import com.vaadin.flow.component.button.Button;
@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.joining;
 @SpringComponent
 public class TestVersionsEditor extends VerticalLayout {
 
-    private TextPdfExport textPdfExport;
+    private TextPdfExportService textPdfExportService;
     private TestService service;
     private Test test;
 
@@ -38,11 +38,11 @@ public class TestVersionsEditor extends VerticalLayout {
             TestService service,
             RandomTestVersionGenerationDialog randomEditDialog,
             SelectiveTestVersionGenerationDialog selectiveEditDialog,
-            TextPdfExport textPdfExport,
+            TextPdfExportService textPdfExportService,
             VersionQuestionsDialog questionsDialog
     ) {
         this.service = service;
-        this.textPdfExport = textPdfExport;
+        this.textPdfExportService = textPdfExportService;
         this.questionsDialog = questionsDialog;
 
         add(new HorizontalLayout(generateSelectiveButton, generateRandomButton));
@@ -88,7 +88,7 @@ public class TestVersionsEditor extends VerticalLayout {
         var testVersion = test.getVersions().stream()
                 .filter(version -> version.getId() == it.id)
                 .findAny().orElseThrow();
-        return new DownloadVersionPdfLink(textPdfExport, test, testVersion);
+        return new DownloadVersionPdfLink(textPdfExportService, test, testVersion);
     }
 
     private void showVersionQuestions(Version version) {
