@@ -48,7 +48,7 @@ public class TextPdfExportService {
 
     private void generateContent(Document document, Test test, TestVersion version) throws DocumentException {
 
-        Paragraph header = new Paragraph("Тест: " + test.getTitle(), bigFont);
+        Paragraph header = new Paragraph("Тест '" + test.getTitle() + "'", bigFont);
         addEmptyLine(header, 2);
         document.add(header);
 
