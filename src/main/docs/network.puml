@@ -1,0 +1,51 @@
+@startuml
+
+hide empty members
+allowmixing
+
+component "Устройство (сервер)" as host #technology {
+
+    component "Среда выполнения: OS Ubuntu" #motivation {
+
+        package "WEB-сервер" as webserver #snow {
+
+                node "Nginx v1.21" as nginx
+
+                node "Приложение (docker-контейнер)" {
+
+                    namespace "Java 11" as application {
+                        component "Spring Boot v2.3.2" as spring
+                        component "Vaadin Flow v23.0.10" as vaadin
+                        database "H2 (embedded)" as h2
+
+                        vaadin -> spring
+                        spring -> h2
+                    }
+
+                    nginx .> application
+
+                }
+
+            }
+    }
+
+}
+
+component "Устройство - персональный компьютер или смартфон" as client #lightsteelblue  {
+
+    component "Среда выполнения: Windows | Linux | MacOS | iOS | Android" as client_os #snow {
+
+        component "WEB-браузер" as browser {
+            component "JavaScript"
+            component "CSS3"
+            component "HTML5"
+        }
+
+    }
+
+}
+
+browser ---> webserver
+
+
+@enduml
