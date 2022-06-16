@@ -1,0 +1,119 @@
+@startuml
+
+hide empty members
+allowmixing
+
+title "Экзамены"
+
+package "Группа" {
+
+    class GroupExaminationService
+    class GroupExamination {
+        + id: Int
+        + studentGroup: <b>StudentGroup</b>
+        + test: <b>Test</b>
+        + openExamTime: Date
+        + closeExamTime: Date
+        + teacher: <b>User</b>
+    }
+
+    GroupExaminationService --> GroupExamination
+    GroupExaminationService --> GroupExaminationRepository
+
+    interface GroupExaminationRepository
+    GroupExamination <-- GroupExaminationRepository
+
+    class GroupExaminationRepositoryImpl implements GroupExaminationRepository
+    class GroupExaminationEntity
+    GroupExaminationRepositoryImpl -> GroupExaminationEntity
+
+}
+
+package "Студент" {
+
+    class StudentExaminationService
+
+    class QuestionExamination {
+        + id: Int
+        + points: Float
+        + answer: String
+    }
+
+    class StudentExamination {
+        + id: Int
+        + student: <b>User</b>
+        + test: Test
+        + resultList: List<<b>QuestionExamination</b>>
+        + started: Date
+        + finished: Date
+        + points: Float
+        + testVersion: <b>TestVersion</b>
+        + groupExamination: GroupExamination
+    }
+
+    interface ExaminationRepository
+
+    StudentExaminationService --> StudentExamination
+    StudentExamination --o QuestionExamination
+
+    StudentExaminationService --> ExaminationRepository
+    StudentExamination --* ExaminationRepository
+
+    class ExaminationRepositoryImpl implements ExaminationRepository
+    class StudentExaminationEntity
+    class QuestionExaminationEntity
+    ExaminationRepositoryImpl -> StudentExaminationEntity
+    StudentExaminationEntity -o QuestionExaminationEntity
+
+}
+
+package "Отчеты" {
+
+    class ExaminationReportService
+    ExaminationReportService --> GroupExaminationService
+    ExaminationReportService --> StudentExaminationService
+
+    enum GroupExaminationStatus {
+        PLANNED
+        IN_PROCESS
+        FINISHED
+    }
+
+    class GroupExaminationReport {
+        + id: Int
+        + group: <b>StudentGroup</b>
+        + discipline: <b>Discipline</b>
+        + teacher: <b>User</b>
+        + test: <b>Test</b>
+        + from: Date
+        + to: Date
+        + finishedStudentsQuantity: Int
+        + averagePoints: Float
+        + status: GroupExaminationStatus
+        + reports: List<StudentExaminationReport>
+    }
+
+    GroupExaminationReport --> ExaminationReportService
+    GroupExaminationStatus <- GroupExaminationReport::status
+
+    class StudentExaminationReport {
+        + from: Date
+        + to: Date
+        + status: StudentExaminationStatus
+    }
+
+    enum StudentExaminationStatus {
+        PLANNED
+        NOT_STARTED
+        IN_PROCESS
+        SUCCESSFUL
+        FAILED
+    }
+
+    StudentExaminationReport --> StudentExaminationStatus
+    GroupExaminationReport::reports -o StudentExaminationReport
+
+}
+
+
+@enduml

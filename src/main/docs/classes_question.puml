@@ -9,9 +9,12 @@ package "Вопросы" as questions {
 
     class QuestionService
 
-    class CheckResult
+    class CheckResult {
+        + points: Float
+        + message: String
+    }
 
-    abstract class Question {
+    abstract class Question<Selection> {
         + id: Int
         + title: String
         + description: String
@@ -24,8 +27,8 @@ package "Вопросы" as questions {
 
     interface Selection
     Question -> Selection
-
-    Question::difficulty --o Difficulty
+    Question --o Difficulty
+    Question -d-> CheckResult
 
     enum Difficulty {
         LOW
@@ -47,13 +50,13 @@ package "Вопросы" as questions {
 
 }
 
-package "Закрытые вопросы" {
+package "Закрытые вопросы" as closed_questions {
 
-    class ClosedQuestion extends Question {
+    class ClosedQuestion<ClosedQuestionSelection> {
         - options: List<ClosedQuestionOption>
     }
 
-    class ClosedQuestionSelection implements Selection {
+    class ClosedQuestionSelection {
         + selectedOptions: Set<Int>
     }
 
@@ -64,19 +67,19 @@ package "Закрытые вопросы" {
     }
 
     ClosedQuestion::options --* ClosedQuestionOption
-    ClosedQuestion --> ClosedQuestionSelection
+    ClosedQuestion -> ClosedQuestionSelection
 
     ClosedQuestionSelection::selectedOptions ..> ClosedQuestionOption::id
 }
 
-package "Закрытые упорядоченные вопросы" {
+package "Закрытые упорядоченные вопросы" as ordered_questions {
 
-    class OrderedClosedQuestion extends Question {
+    class OrderedClosedQuestion<OrderedClosedQuestionSelection> {
         - options: List<OrderedClosedQuestionOption>
         - validOrderedOptions: List<Int>
     }
 
-    class OrderedClosedQuestionSelection implements Selection {
+    class OrderedClosedQuestionSelection {
         + selectedOptions: List<Int>
     }
 
@@ -85,7 +88,7 @@ package "Закрытые упорядоченные вопросы" {
         + title: String
     }
 
-    OrderedClosedQuestion --> OrderedClosedQuestionSelection
+    OrderedClosedQuestion -> OrderedClosedQuestionSelection
 
     OrderedClosedQuestion::options --* OrderedClosedQuestionOption::id
 
@@ -93,18 +96,23 @@ package "Закрытые упорядоченные вопросы" {
 
 }
 
-package "Открытые вопросы" {
-    class OpenQuestion extends Question {
+package "Открытые вопросы" as open_questions {
+
+    class OpenQuestion<OpenQuestionSelection> {
         - validAnswer: String
         - maxDeviation: Float
     }
 
-    class OpenQuestionSelection implements Selection {
+    class OpenQuestionSelection {
         + answer: String
     }
 
     OpenQuestion --> OpenQuestionSelection
 }
+
+Question <-- closed_questions
+Question <-- ordered_questions
+Question <-- open_questions
 
 
 @enduml

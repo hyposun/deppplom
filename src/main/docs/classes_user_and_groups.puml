@@ -24,8 +24,10 @@ package "Группы" as groups {
 
     StudentGroupService --* StudentGroupRepository
 
-
-
+    class StudentGroupDataService
+    StudentGroupDataService -* StudentGroupService
+    class StudentGroupData
+    StudentGroupDataService --> StudentGroupData
 
 }
 
@@ -50,8 +52,8 @@ package "Пользователи" as users {
     }
 
 
-    Role o- User::role
-    User::groups --* groups.StudentGroup::id
+    Role *- User::role
+    User::groups --o groups.StudentGroup::id
     User <-- UserRepository
 
     class UserRepositoryImpl implements UserRepository

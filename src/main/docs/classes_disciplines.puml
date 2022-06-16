@@ -5,27 +5,25 @@ allowmixing
 
 title "Дисциплины"
 
-package "Дисциплины" as disciplines {
+class DisciplineService
 
-    class DisciplineService
-    interface DisciplineRepository
+interface DisciplineRepository
 
-    class Discipline {
-        + id: Int
-        + title: String
-        + parentId: Int
-    }
-
-    Discipline <-- DisciplineRepository
-
-    class DisciplineRepositoryImpl implements DisciplineRepository
-    class DisciplineEntity
-    DisciplineRepositoryImpl -> DisciplineEntity
-
-    DisciplineService -> Discipline
-    DisciplineService --* DisciplineRepository
-
-
+class Discipline {
+    + id: Int
+    + title: String
+    + parentId: Int
 }
+
+Discipline <-- DisciplineRepository
+
+class DisciplineRepositoryImpl implements DisciplineRepository
+class DisciplineEntity
+DisciplineRepositoryImpl -> DisciplineEntity
+
+DisciplineService -> Discipline
+DisciplineService --* DisciplineRepository
+
+
 
 @enduml

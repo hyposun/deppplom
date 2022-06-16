@@ -1,0 +1,44 @@
+@startuml
+
+hide empty members
+allowmixing
+
+title "Чат"
+
+class ChatService
+
+class Chat {
+    id: Long
+    participants: List<<b>User</b>>
+}
+
+class ChatMessage {
+    + id: Long
+    + chatId: Long
+    + from: <b>User</b>
+    + message: String
+    + time: Date
+    + delivered: Boolean
+}
+
+ChatService --> Chat
+ChatService --> ChatMessage
+
+interface ChatRepository
+interface ChatMessageRepository
+
+class ChatRepositoryImpl implements ChatRepository
+class ChatEntity
+ChatRepositoryImpl --> ChatEntity
+
+class ChatMessageRepositoryImpl implements ChatMessageRepository
+class ChatMessageEntity
+ChatMessageRepositoryImpl --> ChatMessageEntity
+
+ChatService --> ChatRepository
+ChatService --> ChatMessageRepository
+
+Chat <- ChatRepository
+ChatMessageRepository -> ChatMessage
+
+@enduml

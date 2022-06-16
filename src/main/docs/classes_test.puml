@@ -1,0 +1,46 @@
+@startuml
+
+hide empty members
+allowmixing
+
+title "Тесты"
+
+class TestService
+
+interface TestRepository
+
+class Test {
+    + id: Int
+    + title: String
+    + minimumPoints: Float
+    + lowQuestions: Int
+    + mediumQuestions: Int
+    + highQuestions: Int
+    + discipline: <b>Discipline</b>
+    + versions: List<TestVersion>
+}
+
+class TestVersion {
+    + id: Int
+    + questions: List<<b>Question</b>>
+}
+
+Test -o TestVersion
+
+TestService --> Test
+TestService --> TestVersion
+TestService ---> TestRepository
+
+
+class TestRepositoryImpl implements TestRepository
+class TestEntity
+class TestVersionEntity
+TestRepositoryImpl --> TestEntity
+TestRepositoryImpl --> TestVersionEntity
+
+class TestPdfExportService
+Test <-- TestPdfExportService
+TestVersion <-- TestPdfExportService
+
+
+@enduml
