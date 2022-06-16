@@ -24,7 +24,7 @@ import static java.util.Collections.emptyList;
 
 @SuppressWarnings("FieldMayBeFinal")
 @Route(value = "tests", layout = BaseLayout.class)
-@RolesAllowed({"ADMIN", "TEACHER"})
+@RolesAllowed({"TEACHER"})
 @PageTitle("Deppplom | Тесты")
 public class TestsView extends VerticalLayout {
 

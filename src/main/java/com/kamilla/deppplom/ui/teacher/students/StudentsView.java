@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Route(value = "students", layout = BaseLayout.class)
-@RolesAllowed({"ADMIN", "TEACHER"})
+@RolesAllowed({"TEACHER"})
 @PageTitle("Deppplom | Студенты")
 public class StudentsView extends VerticalLayout {
 

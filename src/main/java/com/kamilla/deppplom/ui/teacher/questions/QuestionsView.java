@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("FieldMayBeFinal")
 @Route(value = "questions", layout = BaseLayout.class)
-@RolesAllowed({"ADMIN", "TEACHER"})
+@RolesAllowed({"TEACHER"})
 @PageTitle("Deppplom | Вопросы")
 public class QuestionsView extends VerticalLayout {
 

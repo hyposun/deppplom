@@ -27,7 +27,7 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 @PageTitle("Deppplom | Экзамены")
 @Route(value = "examinations", layout = BaseLayout.class)
-@RolesAllowed({"ADMIN", "TEACHER"})
+@RolesAllowed({"TEACHER"})
 public class GroupExaminationView extends VerticalLayout {
 
     private ExaminationReportService reportService;
