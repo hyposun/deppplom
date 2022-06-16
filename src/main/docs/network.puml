@@ -1,5 +1,4 @@
 @startuml
-
 hide empty members
 allowmixing
 
@@ -45,7 +44,7 @@ component "Устройство - персональный компьютер и
 
 }
 
-browser ---> webserver
+browser ---> webserver : HTTP / WebSocket
 
 
 @enduml
