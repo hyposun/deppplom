@@ -1,0 +1,69 @@
+@startuml
+
+hide empty members
+allowmixing
+
+title "Пользователи и группы"
+
+package "Группы" as groups {
+
+    class StudentGroupService
+    interface StudentGroupRepository
+
+    class StudentGroup {
+        + id: Int
+        + title: String
+    }
+
+
+    StudentGroupService --> StudentGroup
+
+    class StudentGroupRepositoryImpl implements StudentGroupRepository
+    class StudentGroupEntity
+    StudentGroupRepositoryImpl -> StudentGroupEntity
+
+    StudentGroupService --* StudentGroupRepository
+
+
+
+
+}
+
+package "Пользователи" as users {
+
+    class UserService
+    interface UserRepository
+
+    class User {
+        + id: Int
+        + name: String
+        + login: String
+        + password_hash: String
+        + role: Role
+        + groups: List<StudentGroup>
+    }
+
+    enum Role {
+        ADMIN
+        TEACHER
+        STUDENT
+    }
+
+
+    Role o- User::role
+    User::groups --* groups.StudentGroup::id
+    User <-- UserRepository
+
+    class UserRepositoryImpl implements UserRepository
+    class UserRepositoryImpl
+    class UserEntity
+
+    UserRepositoryImpl -> UserEntity
+
+    UserService --* UserRepository
+    UserService --> User
+
+
+}
+
+@enduml

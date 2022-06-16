@@ -1,0 +1,110 @@
+@startuml
+
+hide empty members
+allowmixing
+
+title "Вопросы"
+
+package "Вопросы" as questions {
+
+    class QuestionService
+
+    class CheckResult
+
+    abstract class Question {
+        + id: Int
+        + title: String
+        + description: String
+        + difficulty: Difficulty
+        + resultDescription: String
+        + discipline: <b>Discipline</b>
+        + check(Selection): CheckResult
+        + getCost(): Int
+    }
+
+    interface Selection
+    Question -> Selection
+
+    Question::difficulty --o Difficulty
+
+    enum Difficulty {
+        LOW
+        MEDIUM
+        HIGH
+    }
+
+    QuestionService -> Question
+
+    interface QuestionRepository
+    QuestionService ----* QuestionRepository
+
+    Question <-- QuestionRepository
+
+    class QuestionRepositoryImpl implements QuestionRepository
+    class QuestionEntity
+
+    QuestionRepositoryImpl -> QuestionEntity
+
+}
+
+package "Закрытые вопросы" {
+
+    class ClosedQuestion extends Question {
+        - options: List<ClosedQuestionOption>
+    }
+
+    class ClosedQuestionSelection implements Selection {
+        + selectedOptions: Set<Int>
+    }
+
+    class ClosedQuestionOption {
+        + id: Int
+        + title: String
+        + valid: Boolean
+    }
+
+    ClosedQuestion::options --* ClosedQuestionOption
+    ClosedQuestion --> ClosedQuestionSelection
+
+    ClosedQuestionSelection::selectedOptions ..> ClosedQuestionOption::id
+}
+
+package "Закрытые упорядоченные вопросы" {
+
+    class OrderedClosedQuestion extends Question {
+        - options: List<OrderedClosedQuestionOption>
+        - validOrderedOptions: List<Int>
+    }
+
+    class OrderedClosedQuestionSelection implements Selection {
+        + selectedOptions: List<Int>
+    }
+
+    class OrderedClosedQuestionOption {
+        + id: Int
+        + title: String
+    }
+
+    OrderedClosedQuestion --> OrderedClosedQuestionSelection
+
+    OrderedClosedQuestion::options --* OrderedClosedQuestionOption::id
+
+    OrderedClosedQuestionSelection::selectedOptions ..> OrderedClosedQuestionOption::id
+
+}
+
+package "Открытые вопросы" {
+    class OpenQuestion extends Question {
+        - validAnswer: String
+        - maxDeviation: Float
+    }
+
+    class OpenQuestionSelection implements Selection {
+        + answer: String
+    }
+
+    OpenQuestion --> OpenQuestionSelection
+}
+
+
+@enduml
