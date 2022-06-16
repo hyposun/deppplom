@@ -119,6 +119,12 @@ public abstract class BaseQuestionView<T extends Question> extends VerticalLayou
     }
 
     protected void save() {
+
+        if (question.getDifficulty() == null) {
+            errorNotification("Укажите сложность вопроса", 2);
+            return;
+        }
+
         questionService.save(question);
         successNotification("Изменения сохранены", 2);
         navigateToQuestionsView();
