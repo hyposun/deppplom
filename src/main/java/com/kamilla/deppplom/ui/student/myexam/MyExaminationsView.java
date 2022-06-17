@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 
 @PageTitle("Deppplom | Мои экзамены")
 @Route(value = "my_examinations", layout = BaseLayout.class)
-@RolesAllowed({"ADMIN", "STUDENT"})
+@RolesAllowed({"STUDENT"})
 public class MyExaminationsView extends VerticalLayout {
 
     private ExaminationReportService service;
