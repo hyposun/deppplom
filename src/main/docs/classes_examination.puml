@@ -21,7 +21,7 @@ package "Группа" {
     GroupExaminationService --> GroupExaminationRepository
 
     interface GroupExaminationRepository
-    GroupExamination <-- GroupExaminationRepository
+    GroupExamination <.. GroupExaminationRepository
 
     class GroupExaminationRepositoryImpl implements GroupExaminationRepository
     class GroupExaminationEntity
@@ -57,7 +57,7 @@ package "Студент" {
     StudentExamination --o QuestionExamination
 
     StudentExaminationService --> ExaminationRepository
-    StudentExamination --* ExaminationRepository
+    StudentExamination <.. ExaminationRepository
 
     class ExaminationRepositoryImpl implements ExaminationRepository
     class StudentExaminationEntity

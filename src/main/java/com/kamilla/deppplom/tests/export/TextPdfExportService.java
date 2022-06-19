@@ -3,12 +3,14 @@ package com.kamilla.deppplom.tests.export;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.kamilla.deppplom.media.MediaService;
 import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
 import com.kamilla.deppplom.question.impl.orderedclosedquestion.OrderedClosedQuestion;
 import com.kamilla.deppplom.question.model.Question;
 import com.kamilla.deppplom.tests.model.Test;
 import com.kamilla.deppplom.tests.model.TestVersion;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -19,6 +21,9 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class TextPdfExportService {
 
     private static final String FONT_PATH = "src/main/resources/arial.ttf";
+
+    @Autowired
+    private MediaService mediaService;
 
     private Font bigFont;
     private Font mediumFont;
@@ -111,16 +116,34 @@ public class TextPdfExportService {
         List list = new List();
         for (int i = 0; i < question.getOptions().size(); i++) {
             ClosedQuestion.Option option = question.getOptions().get(i);
+
             ListItem item = new ListItem((i + 1) + ". " + option.getTitle(), smallFont);
             list.add(item);
+
+            if (option.getImageMediaId() != null) {
+                Jpeg image = getImage(option.getImageMediaId());
+                if (image != null) document.add(image);
+            }
         }
         list.setIndentationLeft(10);
         list.setListSymbol(new Chunk("", smallFont));
+
         document.add(new Paragraph(" ", smallFont));
         document.add(list);
         document.add(new Paragraph(" ", normalFont));
         document.add(new Paragraph("Номера ответов: ", smallFont));
         document.add(new Paragraph(" ", normalFont));
+    }
+
+    @SneakyThrows
+    private Jpeg getImage(int imageMediaId) {
+
+        var content = mediaService
+                .findById(imageMediaId)
+                .map(media -> mediaService.download(media.getId()));
+
+        if (content.isEmpty()) return null;
+        return new Jpeg(content.get());
     }
 
     private void addOrderedClosedQuestionContent(OrderedClosedQuestion question, Document document) throws DocumentException {

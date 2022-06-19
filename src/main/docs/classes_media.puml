@@ -1,0 +1,38 @@
+@startuml
+
+hide empty members
+allowmixing
+
+title "Медиа"
+
+interface MediaService {
+    + upload()
+    + download()
+    + findById()
+}
+
+class Media {
+    + id: Int
+    + key: String
+    + name: String
+}
+
+MediaService -> Media
+
+
+class DBMediaService implements MediaService
+
+interface DBMediaRepository
+
+class DBMediaEntity {
+    + id: Int
+    + key: String
+    + name: String
+    + content: ByteArray
+}
+
+DBMediaRepository -> DBMediaEntity
+DBMediaService --o DBMediaRepository
+
+
+@enduml
