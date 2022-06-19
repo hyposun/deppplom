@@ -1,5 +1,6 @@
 package com.kamilla.deppplom.ui.teacher.questions.closed;
 
+import com.kamilla.deppplom.media.MediaService;
 import com.kamilla.deppplom.question.QuestionService;
 import com.kamilla.deppplom.question.impl.closedquestion.ClosedQuestion;
 import com.kamilla.deppplom.ui.BaseLayout;
@@ -30,12 +31,15 @@ import static com.kamilla.deppplom.ui.utils.UIUtils.errorNotification;
 @RolesAllowed({"ADMIN", "TEACHER"})
 public class ClosedQuestionView extends BaseQuestionView<ClosedQuestion> {
 
+    private MediaService mediaService;
+
     protected Button newOptionButton;
     protected VerticalLayout optionsLayout;
     protected List<ClosedQuestionOptionComponent> optionComponents = new ArrayList<>();
 
-    public ClosedQuestionView(QuestionService questionService) {
+    public ClosedQuestionView(QuestionService questionService, MediaService mediaService) {
         super(questionService);
+        this.mediaService = mediaService;
     }
 
     @Override
@@ -52,7 +56,7 @@ public class ClosedQuestionView extends BaseQuestionView<ClosedQuestion> {
     protected List<Component> getAdditionComponents() {
         newOptionButton = new Button("Добавить ответ", VaadinIcon.PLUS.create());
         newOptionButton.addClickListener(event ->
-            addOption(optionComponents.size() + 1, "", false)
+            addOption(optionComponents.size() + 1, "", false, null)
         );
         optionsLayout = new VerticalLayout(newOptionButton);
         return Collections.singletonList(optionsLayout);
@@ -62,7 +66,7 @@ public class ClosedQuestionView extends BaseQuestionView<ClosedQuestion> {
     public void beforeEnter(BeforeEnterEvent event) {
         super.beforeEnter(event);
         question.getOptions()
-                .forEach(it -> addOption(it.getId(), it.getTitle(), it.isValid()));
+                .forEach(it -> addOption(it.getId(), it.getTitle(), it.isValid(), it.getImageMediaId()));
     }
 
     @Override
@@ -100,14 +104,14 @@ public class ClosedQuestionView extends BaseQuestionView<ClosedQuestion> {
         }
 
         List<ClosedQuestion.Option> options = possibleAnswers.stream()
-                                                             .map(option -> new ClosedQuestion.Option(option.getId(), option.getTitle(), option.isValid()))
+                                                             .map(option -> new ClosedQuestion.Option(option.getId(), option.getTitle(), option.isValid(), option.getImageMediaId()))
                                                              .collect(Collectors.toList());
         question.setOptions(options);
         super.save();
     }
 
-    private void addOption(int id, String title, boolean valid) {
-        ClosedQuestionOptionComponent component = new ClosedQuestionOptionComponent(id, title, valid);
+    private void addOption(int id, String title, boolean valid, Integer imageMediaId) {
+        ClosedQuestionOptionComponent component = new ClosedQuestionOptionComponent(id, title, valid, imageMediaId, mediaService);
         optionsLayout.add(component);
         optionComponents.add(component);
         component.setOnDelete(() -> {

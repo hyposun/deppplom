@@ -76,6 +76,7 @@ public class ClosedQuestion extends Question {
         private int id;
         private String title;
         private boolean valid;
+        private Integer imageMediaId;
     }
 
 }
