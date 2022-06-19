@@ -64,6 +64,7 @@ package "Закрытые вопросы" as closed_questions {
         + id: Int
         + title: String
         + valid: Boolean
+        + imageMediaId: Int
     }
 
     ClosedQuestion::options --* ClosedQuestionOption
