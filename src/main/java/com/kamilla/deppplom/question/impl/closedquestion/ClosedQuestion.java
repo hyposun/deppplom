@@ -48,10 +48,11 @@ public class ClosedQuestion extends Question {
             return new CheckResult(falsePoints, getExplanation());
         }
 
-        var result = (float)selectedValidOptions.size() / ((float) validOptions.size() + (float) wrongOptions.size());
+        var result = ((float)selectedValidOptions.size() / ((float) validOptions.size() + (float) wrongOptions.size()))*getCost();
 
         return new CheckResult(result, getExplanation());
     }
+
 
     private String getExplanation() {
         if (!isBlank(resultDescription)) return resultDescription;
