@@ -33,6 +33,13 @@ package "Группы" as groups {
 
 package "Пользователи" as users {
 
+    class UserDataService
+    class UserData
+
+'    UserDataService --> UserData
+    UserData <- UserDataService
+    UserDataService -> UserService
+
     class UserService
     interface UserRepository
 
