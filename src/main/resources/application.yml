@@ -20,6 +20,8 @@ spring:
     hibernate.ddl-auto: "update"
 
 service:
+  auth:
+    secret: "WhatAreYouDoingHere,Inspector?"
   default:
     adminLogin: admin
     adminPassword: admin
