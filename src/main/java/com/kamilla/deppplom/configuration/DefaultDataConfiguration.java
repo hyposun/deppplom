@@ -6,7 +6,7 @@ import com.kamilla.deppplom.groups.StudentGroup;
 import com.kamilla.deppplom.groups.StudentGroupRepository;
 import com.kamilla.deppplom.users.Role;
 import com.kamilla.deppplom.users.User;
-import com.kamilla.deppplom.users.UserRepository;
+import com.kamilla.deppplom.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class DefaultDataConfiguration {
     private String disciplines;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
     StudentGroupRepository groupRepository;
@@ -77,7 +77,7 @@ public class DefaultDataConfiguration {
     }
 
     private void handleUser() {
-        var admin = userRepository.findByLogin(adminLogin);
+        var admin = userService.findByLogin(adminLogin);
         if (admin.isPresent()) return;
 
         var user = new User();
@@ -86,7 +86,7 @@ public class DefaultDataConfiguration {
         user.setLogin(adminLogin);
         user.setPassword(adminPassword);
         user.setRole(Role.ADMIN);
-        user = userRepository.save(user);
+        user = userService.update(user);
         log.info("Зарегистрирована учетная запись администратора:" + user);
     }
 

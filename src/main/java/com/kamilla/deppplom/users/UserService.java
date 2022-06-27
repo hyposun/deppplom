@@ -4,6 +4,7 @@ import com.kamilla.deppplom.groups.StudentGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,9 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public User getUser(int id) {
         return repository.getOne(id);
@@ -38,7 +42,23 @@ public class UserService {
             }
         }
 
+        processPassword(user);
+
         return repository.save(user);
+    }
+
+    private void processPassword(User user) {
+
+        boolean passwordChanged = repository
+                .findById(user.getId())
+                .map(User::getPassword)
+                .map(currentPasswordHash -> !currentPasswordHash.equals(user.getPassword()))
+                .orElse(true);
+
+        if (passwordChanged) {
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+        }
     }
 
     public List<User> findAllByNameLike(String titleLike) {
@@ -81,4 +101,7 @@ public class UserService {
         repository.deleteById(id);
     }
 
+    public Optional<User> findByLogin(String login) {
+        return repository.findByLogin(login);
+    }
 }
