@@ -106,26 +106,46 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
         boolean valid = true;
 
         List<QuestionItem> lowQuestions = grouped.get(Difficulty.LOW);
-        if (test.getLowQuestions() != lowQuestions.size()) {
+        if (test.getLowQuestions()!=0 && lowQuestions == null){
+            valid=false;
+        }
+        else if (test.getLowQuestions() != lowQuestions.size()) {
             valid = false;
         }
 
         List<QuestionItem> mediumQuestions = grouped.get(Difficulty.MEDIUM);
-        if (test.getMediumQuestion() != mediumQuestions.size()) {
+        if(test.getMediumQuestion()!=0 && mediumQuestions == null){
+            valid=false;
+        } else if (test.getMediumQuestion() != mediumQuestions.size()) {
             valid = false;
         }
 
         List<QuestionItem> highQuestions = grouped.get(Difficulty.HIGH);
-        if (test.getHighQuestions() != highQuestions.size()) {
+        if (test.getHighQuestions()!=0 && highQuestions==null){
+            valid=false;
+        } else if (test.getHighQuestions() != highQuestions.size()) {
             valid = false;
         }
 
         if (!valid) {
             StringBuilder builder = new StringBuilder();
             builder.append("Обнаружено несоответсвие условиям теста: ").append(System.lineSeparator());
-            builder.append("Легких вопросов - ").append(lowQuestions.size()).append(" из ").append(test.getLowQuestions());
-            builder.append("Средних вопросов - ").append(mediumQuestions.size()).append(" из ").append(test.getMediumQuestion());
-            builder.append("Сложных вопросов - ").append(highQuestions.size()).append(" из ").append(test.getHighQuestions());
+            if (lowQuestions==null){
+                builder.append("Количество легких вопросов = 0").append(System.lineSeparator());
+            }
+            else {
+                builder.append("Легких вопросов - ").append(lowQuestions.size()).append(" из ").append(test.getLowQuestions());
+            }
+            if (mediumQuestions==null){
+                builder.append("Количество средних вопросов = 0").append(System.lineSeparator());
+            } else {
+                builder.append("Средних вопросов - ").append(mediumQuestions.size()).append(" из ").append(test.getMediumQuestion());
+            }
+            if (highQuestions==null) {
+                builder.append("Количество сложных вопросов = 0").append("\n");
+            } else {
+                builder.append("Сложных вопросов - ").append(highQuestions.size()).append(" из ").append(test.getHighQuestions());
+            }
             errorNotification(builder.toString(), 2);
         }
 
