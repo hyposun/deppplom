@@ -17,15 +17,15 @@ package "Группа" {
         + teacher: <b>User</b>
     }
 
-    GroupExaminationService --> GroupExamination
-    GroupExaminationService --> GroupExaminationRepository
+    GroupExaminationService ..> GroupExamination
+    GroupExaminationService ..> GroupExaminationRepository
 
     interface GroupExaminationRepository
     GroupExamination <.. GroupExaminationRepository
 
     class GroupExaminationRepositoryImpl implements GroupExaminationRepository
     class GroupExaminationEntity
-    GroupExaminationRepositoryImpl -> GroupExaminationEntity
+    GroupExaminationRepositoryImpl .> GroupExaminationEntity
 
 }
 
@@ -53,8 +53,8 @@ package "Студент" {
 
     interface ExaminationRepository
 
-    StudentExaminationService --> StudentExamination
-    StudentExamination --o QuestionExamination
+    StudentExaminationService ..> StudentExamination
+    StudentExamination *-- QuestionExamination::resultList
 
     StudentExaminationService --> ExaminationRepository
     StudentExamination <.. ExaminationRepository
@@ -62,16 +62,16 @@ package "Студент" {
     class ExaminationRepositoryImpl implements ExaminationRepository
     class StudentExaminationEntity
     class QuestionExaminationEntity
-    ExaminationRepositoryImpl -> StudentExaminationEntity
-    StudentExaminationEntity -o QuestionExaminationEntity
+    ExaminationRepositoryImpl .> StudentExaminationEntity
+    StudentExaminationEntity *- QuestionExaminationEntity
 
 }
 
 package "Отчеты" {
 
     class ExaminationReportService
-    ExaminationReportService --> GroupExaminationService
-    ExaminationReportService --> StudentExaminationService
+    ExaminationReportService ..> GroupExaminationService
+    ExaminationReportService ..> StudentExaminationService
 
     enum GroupExaminationStatus {
         PLANNED
@@ -93,7 +93,7 @@ package "Отчеты" {
         + reports: List<StudentExaminationReport>
     }
 
-    GroupExaminationReport --> ExaminationReportService
+    GroupExaminationReport <.. ExaminationReportService
     GroupExaminationStatus <- GroupExaminationReport::status
 
     class StudentExaminationReport {
@@ -111,7 +111,7 @@ package "Отчеты" {
     }
 
     StudentExaminationReport --> StudentExaminationStatus
-    GroupExaminationReport::reports -o StudentExaminationReport
+    GroupExaminationReport::reports *- StudentExaminationReport
 
 }
 

@@ -26,9 +26,9 @@ package "Вопросы" as questions {
     }
 
     interface Selection
-    Question -> Selection
-    Question --o Difficulty
-    Question -d-> CheckResult
+    Question .> Selection
+    Question --> Difficulty
+    Question *-d- CheckResult
 
     enum Difficulty {
         LOW
@@ -36,17 +36,17 @@ package "Вопросы" as questions {
         HIGH
     }
 
-    QuestionService -> Question
+    QuestionService .> Question
 
     interface QuestionRepository
-    QuestionService ----* QuestionRepository
+    QuestionService ....> QuestionRepository
 
-    Question <-- QuestionRepository
+    Question <.. QuestionRepository
 
     class QuestionRepositoryImpl implements QuestionRepository
     class QuestionEntity
 
-    QuestionRepositoryImpl -> QuestionEntity
+    QuestionRepositoryImpl .> QuestionEntity
 
 }
 
@@ -67,10 +67,8 @@ package "Закрытые вопросы" as closed_questions {
         + imageMediaId: Int
     }
 
-    ClosedQuestion::options --* ClosedQuestionOption
-    ClosedQuestion -> ClosedQuestionSelection
-
-    ClosedQuestionSelection::selectedOptions ..> ClosedQuestionOption::id
+    ClosedQuestion *-- ClosedQuestionOption
+    ClosedQuestion ..> ClosedQuestionSelection
 }
 
 package "Закрытые упорядоченные вопросы" as ordered_questions {
@@ -89,12 +87,8 @@ package "Закрытые упорядоченные вопросы" as ordered_
         + title: String
     }
 
-    OrderedClosedQuestion -> OrderedClosedQuestionSelection
-
-    OrderedClosedQuestion::options --* OrderedClosedQuestionOption::id
-
-    OrderedClosedQuestionSelection::selectedOptions ..> OrderedClosedQuestionOption::id
-
+    OrderedClosedQuestion ..> OrderedClosedQuestionSelection
+    OrderedClosedQuestion *-- OrderedClosedQuestionOption
 }
 
 package "Открытые вопросы" as open_questions {
@@ -108,12 +102,12 @@ package "Открытые вопросы" as open_questions {
         + answer: String
     }
 
-    OpenQuestion --> OpenQuestionSelection
+    OpenQuestion ..> OpenQuestionSelection
 }
 
-Question <-- closed_questions
-Question <-- ordered_questions
-Question <-- open_questions
+Question <|-- ClosedQuestion
+Question <|-- OrderedClosedQuestion
+Question <|-- OpenQuestion
 
 
 @enduml

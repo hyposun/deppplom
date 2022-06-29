@@ -17,7 +17,7 @@ class Media {
     + name: String
 }
 
-MediaService -> Media
+MediaService .> Media
 
 
 class DBMediaService implements MediaService
@@ -31,8 +31,8 @@ class DBMediaEntity {
     + content: ByteArray
 }
 
-DBMediaRepository -> DBMediaEntity
-DBMediaService --o DBMediaRepository
+DBMediaRepository .> DBMediaEntity
+DBMediaService ..> DBMediaRepository
 
 
 @enduml

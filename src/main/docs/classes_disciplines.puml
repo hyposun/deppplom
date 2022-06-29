@@ -15,14 +15,14 @@ class Discipline {
     + parentId: Int
 }
 
-Discipline <-- DisciplineRepository
+Discipline <.. DisciplineRepository
 
 class DisciplineRepositoryImpl implements DisciplineRepository
 class DisciplineEntity
-DisciplineRepositoryImpl -> DisciplineEntity
+DisciplineRepositoryImpl .> DisciplineEntity
 
-DisciplineService -> Discipline
-DisciplineService --* DisciplineRepository
+DisciplineService .> Discipline
+DisciplineService ..> DisciplineRepository
 
 
 

@@ -16,18 +16,19 @@ package "Группы" as groups {
     }
 
 
-    StudentGroupService --> StudentGroup
+    StudentGroupService ..> StudentGroup
 
     class StudentGroupRepositoryImpl implements StudentGroupRepository
     class StudentGroupEntity
-    StudentGroupRepositoryImpl -> StudentGroupEntity
+    StudentGroupRepositoryImpl .> StudentGroupEntity
 
-    StudentGroupService --* StudentGroupRepository
+    StudentGroupService ..> StudentGroupRepository
+    StudentGroupRepository .> StudentGroup
 
     class StudentGroupDataService
-    StudentGroupDataService -* StudentGroupService
+    StudentGroupDataService .> StudentGroupService
     class StudentGroupData
-    StudentGroupDataService --> StudentGroupData
+    StudentGroupDataService ..> StudentGroupData
 
 }
 
@@ -37,8 +38,8 @@ package "Пользователи" as users {
     class UserData
 
 '    UserDataService --> UserData
-    UserData <- UserDataService
-    UserDataService -> UserService
+    UserData <. UserDataService
+    UserDataService .> UserService
 
     class UserService
     interface UserRepository
@@ -59,18 +60,18 @@ package "Пользователи" as users {
     }
 
 
-    Role *- User::role
-    User::groups --o groups.StudentGroup::id
-    User <-- UserRepository
+'    Role -* User::role
+    Role <- User::role
+    User::groups --> groups.StudentGroup::id
+    User <.. UserRepository
 
     class UserRepositoryImpl implements UserRepository
-    class UserRepositoryImpl
     class UserEntity
 
-    UserRepositoryImpl -> UserEntity
+    UserRepositoryImpl .> UserEntity
 
-    UserService --* UserRepository
-    UserService --> User
+    UserService ..> UserRepository
+    UserService ..> User
 
 
 }

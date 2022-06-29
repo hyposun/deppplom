@@ -21,24 +21,24 @@ class ChatMessage {
     + delivered: Boolean
 }
 
-ChatService --> Chat
-ChatService --> ChatMessage
+ChatService ..> Chat
+ChatService ..> ChatMessage
 
 interface ChatRepository
 interface ChatMessageRepository
 
 class ChatRepositoryImpl implements ChatRepository
 class ChatEntity
-ChatRepositoryImpl --> ChatEntity
+ChatRepositoryImpl ..> ChatEntity
 
 class ChatMessageRepositoryImpl implements ChatMessageRepository
 class ChatMessageEntity
-ChatMessageRepositoryImpl --> ChatMessageEntity
+ChatMessageRepositoryImpl ..> ChatMessageEntity
 
-ChatService --> ChatRepository
-ChatService --> ChatMessageRepository
+ChatService ..> ChatRepository
+ChatService ..> ChatMessageRepository
 
-Chat <- ChatRepository
-ChatMessageRepository -> ChatMessage
+Chat <. ChatRepository
+ChatMessageRepository .> ChatMessage
 
 @enduml

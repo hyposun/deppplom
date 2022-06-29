@@ -25,22 +25,26 @@ class TestVersion {
     + questions: List<<b>Question</b>>
 }
 
-Test -o TestVersion
+Test *- TestVersion
 
-TestService --> Test
-TestService --> TestVersion
-TestService ---> TestRepository
+TestService ..> Test
+TestService ...> TestRepository
+'TestService ..> TestVersion
 
 
 class TestRepositoryImpl implements TestRepository
 class TestEntity
 class TestVersionEntity
-TestRepositoryImpl --> TestEntity
-TestRepositoryImpl --> TestVersionEntity
+TestRepositoryImpl ..> TestEntity
+'TestRepositoryImpl ..> TestVersionEntity
+TestEntity *- TestVersionEntity
 
 class TestPdfExportService
-Test <-- TestPdfExportService
-TestVersion <-- TestPdfExportService
+TestPdfExportService ..> Test
+TestService <. TestPdfExportService
+'TestVersion <-- TestPdfExportService
 
+Test <.. TestRepository
+'TestVersion <.. TestRepository
 
 @enduml
