@@ -17,9 +17,9 @@ class Discipline {
 
 Discipline <.. DisciplineRepository
 
-class DisciplineRepositoryImpl implements DisciplineRepository
-class DisciplineEntity
-DisciplineRepositoryImpl .> DisciplineEntity
+'class DisciplineRepositoryImpl implements DisciplineRepository
+'class DisciplineEntity
+'DisciplineRepositoryImpl .> DisciplineEntity
 
 DisciplineService .> Discipline
 DisciplineService ..> DisciplineRepository

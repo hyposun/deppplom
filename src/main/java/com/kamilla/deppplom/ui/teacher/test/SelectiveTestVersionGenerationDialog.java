@@ -1,6 +1,7 @@
 package com.kamilla.deppplom.ui.teacher.test;
 
 import com.kamilla.deppplom.question.QuestionService;
+import com.kamilla.deppplom.question.model.Difficulty;
 import com.kamilla.deppplom.tests.TestService;
 import com.kamilla.deppplom.tests.model.Test;
 import com.vaadin.flow.component.button.Button;
@@ -13,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.kamilla.deppplom.ui.utils.UIUtils.errorNotification;
@@ -61,7 +64,7 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
 
         List<QuestionItem> questions = questionService
                 .findAllByDisciplineHierarchy(test.getDiscipline().getId()).stream()
-                .map(it -> new QuestionItem(it.getId(), it.getTitle() + " [" + it.getDifficulty().getTitle() + "]"))
+                .map(it -> new QuestionItem(it.getId(), it.getTitle() + " [" + it.getDifficulty().getTitle() + "]", it.getDifficulty()))
                 .collect(Collectors.toList());
 
         questionsListbox.setItems(questions);
@@ -77,7 +80,11 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
 
     private void save() {
         try {
-            List<Integer> questions = questionsListbox.getValue().stream()
+
+            Set<QuestionItem> values = questionsListbox.getValue();
+            if (!verifyRules(values)) return;
+
+            List<Integer> questions = values.stream()
                     .map(QuestionItem::getId)
                     .collect(Collectors.toList());
 
@@ -91,11 +98,46 @@ public class SelectiveTestVersionGenerationDialog extends Dialog {
         }
     }
 
+    private boolean verifyRules(Set<QuestionItem> values) {
+
+        Map<Difficulty, List<QuestionItem>> grouped = values.stream()
+                .collect(Collectors.groupingBy(QuestionItem::getDifficulty));
+
+        boolean valid = true;
+
+        List<QuestionItem> lowQuestions = grouped.get(Difficulty.LOW);
+        if (test.getLowQuestions() != lowQuestions.size()) {
+            valid = false;
+        }
+
+        List<QuestionItem> mediumQuestions = grouped.get(Difficulty.MEDIUM);
+        if (test.getMediumQuestion() != mediumQuestions.size()) {
+            valid = false;
+        }
+
+        List<QuestionItem> highQuestions = grouped.get(Difficulty.HIGH);
+        if (test.getHighQuestions() != highQuestions.size()) {
+            valid = false;
+        }
+
+        if (!valid) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Обнаружено несоответсвие условиям теста: ").append(System.lineSeparator());
+            builder.append("Легких вопросов - ").append(lowQuestions.size()).append(" из ").append(test.getLowQuestions());
+            builder.append("Средних вопросов - ").append(mediumQuestions.size()).append(" из ").append(test.getMediumQuestion());
+            builder.append("Сложных вопросов - ").append(highQuestions.size()).append(" из ").append(test.getHighQuestions());
+            errorNotification(builder.toString(), 2);
+        }
+
+        return valid;
+    }
+
     @Data
     @AllArgsConstructor
     private static class QuestionItem {
         private int id;
         private String title;
+        private Difficulty difficulty;
     }
 
 }

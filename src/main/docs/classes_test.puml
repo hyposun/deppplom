@@ -32,12 +32,12 @@ TestService ...> TestRepository
 'TestService ..> TestVersion
 
 
-class TestRepositoryImpl implements TestRepository
-class TestEntity
-class TestVersionEntity
-TestRepositoryImpl ..> TestEntity
-'TestRepositoryImpl ..> TestVersionEntity
-TestEntity *- TestVersionEntity
+'class TestRepositoryImpl implements TestRepository
+'class TestEntity
+'class TestVersionEntity
+'TestRepositoryImpl ..> TestEntity
+''TestRepositoryImpl ..> TestVersionEntity
+'TestEntity *- TestVersionEntity
 
 class TestPdfExportService
 TestPdfExportService ..> Test

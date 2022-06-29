@@ -18,9 +18,9 @@ package "Группы" as groups {
 
     StudentGroupService ..> StudentGroup
 
-    class StudentGroupRepositoryImpl implements StudentGroupRepository
-    class StudentGroupEntity
-    StudentGroupRepositoryImpl .> StudentGroupEntity
+'    class StudentGroupRepositoryImpl implements StudentGroupRepository
+'    class StudentGroupEntity
+'    StudentGroupRepositoryImpl .> StudentGroupEntity
 
     StudentGroupService ..> StudentGroupRepository
     StudentGroupRepository .> StudentGroup
@@ -65,10 +65,10 @@ package "Пользователи" as users {
     User::groups --> groups.StudentGroup::id
     User <.. UserRepository
 
-    class UserRepositoryImpl implements UserRepository
-    class UserEntity
-
-    UserRepositoryImpl .> UserEntity
+'    class UserRepositoryImpl implements UserRepository
+'    class UserEntity
+'
+'    UserRepositoryImpl .> UserEntity
 
     UserService ..> UserRepository
     UserService ..> User

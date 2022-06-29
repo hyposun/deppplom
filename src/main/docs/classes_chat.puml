@@ -27,13 +27,13 @@ ChatService ..> ChatMessage
 interface ChatRepository
 interface ChatMessageRepository
 
-class ChatRepositoryImpl implements ChatRepository
-class ChatEntity
-ChatRepositoryImpl ..> ChatEntity
+'class ChatRepositoryImpl implements ChatRepository
+'class ChatEntity
+'ChatRepositoryImpl ..> ChatEntity
 
-class ChatMessageRepositoryImpl implements ChatMessageRepository
-class ChatMessageEntity
-ChatMessageRepositoryImpl ..> ChatMessageEntity
+'class ChatMessageRepositoryImpl implements ChatMessageRepository
+'class ChatMessageEntity
+'ChatMessageRepositoryImpl ..> ChatMessageEntity
 
 ChatService ..> ChatRepository
 ChatService ..> ChatMessageRepository

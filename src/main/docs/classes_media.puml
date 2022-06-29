@@ -22,17 +22,17 @@ MediaService .> Media
 
 class DBMediaService implements MediaService
 
-interface DBMediaRepository
+'interface DBMediaRepository
 
-class DBMediaEntity {
-    + id: Int
-    + key: String
-    + name: String
-    + content: ByteArray
-}
+'class DBMediaEntity {
+'    + id: Int
+'    + key: String
+'    + name: String
+'    + content: ByteArray
+'}
 
-DBMediaRepository .> DBMediaEntity
-DBMediaService ..> DBMediaRepository
+'DBMediaRepository .> DBMediaEntity
+'DBMediaService ..> DBMediaRepository
 
 
 @enduml

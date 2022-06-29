@@ -43,10 +43,10 @@ package "Вопросы" as questions {
 
     Question <.. QuestionRepository
 
-    class QuestionRepositoryImpl implements QuestionRepository
-    class QuestionEntity
+'    class QuestionRepositoryImpl implements QuestionRepository
+'    class QuestionEntity
 
-    QuestionRepositoryImpl .> QuestionEntity
+'    QuestionRepositoryImpl .> QuestionEntity
 
 }
 

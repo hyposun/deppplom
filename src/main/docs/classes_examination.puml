@@ -23,9 +23,9 @@ package "Группа" {
     interface GroupExaminationRepository
     GroupExamination <.. GroupExaminationRepository
 
-    class GroupExaminationRepositoryImpl implements GroupExaminationRepository
-    class GroupExaminationEntity
-    GroupExaminationRepositoryImpl .> GroupExaminationEntity
+'    class GroupExaminationRepositoryImpl implements GroupExaminationRepository
+'    class GroupExaminationEntity
+'    GroupExaminationRepositoryImpl .> GroupExaminationEntity
 
 }
 
@@ -59,11 +59,11 @@ package "Студент" {
     StudentExaminationService ..> ExaminationRepository
     StudentExamination <.. ExaminationRepository
 
-    class ExaminationRepositoryImpl implements ExaminationRepository
-    class StudentExaminationEntity
-    class QuestionExaminationEntity
-    ExaminationRepositoryImpl .> StudentExaminationEntity
-    StudentExaminationEntity *- QuestionExaminationEntity
+'    class ExaminationRepositoryImpl implements ExaminationRepository
+'    class StudentExaminationEntity
+'    class QuestionExaminationEntity
+'    ExaminationRepositoryImpl .> StudentExaminationEntity
+'    StudentExaminationEntity *- QuestionExaminationEntity
 
 }
 
